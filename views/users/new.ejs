@@ -1,5 +1,5 @@
-<%- include('../partials/header.ejs') %>
-<h3>Sing up for an account</h3>
+<%- include('../partials/header.ejs', {user}) %>
+<h3>Sign up for an account</h3>
 
 <form action="/users" method="POST">
     <label for="email">Email:</label>
