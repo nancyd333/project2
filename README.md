@@ -52,7 +52,7 @@ source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/si
     - user should be able to logout
 - Mechanism that allows user to save the search result for that city
 - Page that allows user to see all their search results
-    - user should be able to add, modify, delete the comment associated with their search results
+    - user should be able to add and modify comment associated with their search results
     - user should be able to delete a saved search result
 
 ### Stretch goals
@@ -78,7 +78,7 @@ source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/si
 <details>
 <summary>Potential stretch goals ERD</summary>
 
-<img src="./img/erd_stretch.png" width="350" height="500" />
+<img src="./img/erd_stretch.png" width="350" height="400" />
 </details>
 
 ## RESTful routing chart
