@@ -47,7 +47,11 @@ source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/si
 
 
 ### MVP goals
-- Page where user can search for a US city and get AQI results for that city
+- Page where user can search for a US city and get AQI results for that city (from an API)
+    <details>
+    <summary>expand to see API results</summary>
+    <img src="./img/api_confirmation.png" width="200" height="400"/>
+    </details>
 - Ability for user to login, which allows them to save their search results
     - user should be able to logout
 - Mechanism that allows user to save the search result for that city
