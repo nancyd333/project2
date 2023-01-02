@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class user extends Model {
+  class air_quality_index_desc extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,15 +11,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      models.user.hasMany(models.favorite)
     }
   }
-  user.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
+  air_quality_index_desc.init({
+    range_start: DataTypes.INTEGER,
+    range_end: DataTypes.INTEGER,
+    level: DataTypes.STRING,
+    color: DataTypes.STRING,
+    health_implications: DataTypes.STRING,
+    caution_stmt_pm2_5: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'user',
+    modelName: 'air_quality_index_desc',
+    timestamps: true,
   });
-  return user;
+  return air_quality_index_desc;
 };
