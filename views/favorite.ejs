@@ -1,0 +1,32 @@
+<%- include("./partials/header.ejs") %>
+
+<% allFav.forEach((fav)=> { %>
+    <div class="<%=fav.overall_aqi_color%>">
+        <h2><%= fav.city.city %> </h2>
+        <p>Overall AQI: <%= fav.aqi %> </p>
+        <p>CO aqi: <%= fav.aqi_co %> 
+        PM10 aqi: <%= fav.aqi_pm10 %> 
+        PM2.5 aqi: <%= fav.aqi_pm2_5 %> 
+        SO2 aqi: <%= fav.aqi_so2 %> 
+        O3 aqi: <%= fav.aqi_o3 %> 
+        NO2 aqi: <%= fav.aqi_no2 %> </p>
+        <p>Date saved:<%= fav.date %> </p>
+        <p>color:<%= fav.overall_aqi_color %> </p>
+        <p>Notes:</p>
+        <form action="/favorite" method="post">
+            <textarea name="comment" maxlength="250" rows="3" cols="100" placeholder="Enter up to to 250 characters"><%=fav.comments%></textarea>
+            <input type="hidden" name="id" value="<%=fav.id%>">
+            <button type="submit">save note changes</input>
+        </form>
+        <form action="/favorite?_method=DELETE" method="post">
+            <input type="hidden" name="deleteId" value="<%=fav.id%>">
+            <input type="hidden" name="delete" value="delete">
+            <button type="submit">delete this favorite</input>
+        </form>
+    </div>
+    <% }); %>
+
+    
+
+
+<%- include("./partials/footer.ejs") %>

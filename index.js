@@ -141,41 +141,64 @@ app.post('/search', async(req,res)=>{
     }
 })
 
+app.get('/favorite', async (req,res)=>{
+    try{
+        const allFav = await db.favorite.findAll({
+            where: {userId: res.locals.user.id},
+            include: [db.user,db.city],
+            order: [
+            ['id', 'DESC']
+            ]
+        })
+        
+        for(const fav of allFav){
+            fav.overall_aqi_color = getAqiColor(fav.aqi)
+        }
+      
+        res.render('favorite',{allFav})
+    
+    } catch(err){
+      console.log("error",err)
+    }
+  })
 
+app.post('/favorite',async(req,res)=>{
+    try{
+        await db.favorite.update({comments: req.body.comment}, {
+            where: {
+                id: req.body.id
+            }
+        })
+  
+    res.redirect('/favorite')
+    
+    } catch(err){
+        console.log("error",err)
+    }
+})
+  
+app.delete('/favorite', async (req,res)=>{
+    await db.favorite.destroy({
+        where: {
+            id: req.body.deleteId
+        }
+    })
+    
+    res.redirect('/favorite')
+})
 
 app.get('/', async (req, res) => {
-try{
-    await res.render('map', {
-        user: res.locals.user
-    })
-} catch(err){
-    console.log('error message : ', err)
-}
+    try{
+        await res.render('map', {
+            user: res.locals.user
+        })
+    } catch(err){
+        console.log('error message : ', err)
+    }
 })
 
 //define users controllers
 app.use('/users', require('./controllers/users'))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
