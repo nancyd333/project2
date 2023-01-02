@@ -1,0 +1,41 @@
+body{
+    background-color:  rgba(83,158,249,1);
+   
+}
+
+
+#map { 
+    height: 750px; 
+    width: 1500px;
+}
+
+header{
+    grid-area: head;
+    margin: 2px;
+    font-size: 30px;
+}
+
+nav{
+    grid-area: nav;
+    margin: 2px;
+    font-size: 30px;
+}
+
+.green{
+    background-color: #7bc950;
+}
+.yellow{
+    background-color: #feffbe;
+}
+.orange{
+    background-color: #f06543;
+}
+.red{
+    background-color: #b80600;
+}
+.purple{
+    background-color: #5d2e8f;
+}
+.purple{
+    background-color: #7e2e10;
+}

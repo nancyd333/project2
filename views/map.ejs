@@ -1,0 +1,21 @@
+<%- include("./partials/header.ejs") %>
+
+
+<div id="home">
+    <h1>Search a major U.S. city for details
+<form action="/search" method="get" id="homeSearch">
+    <label for="city"></label>
+    <input type="text" id="homeSearch" name="city" required>
+    <button type="submit" value="city">Submit</button>
+</form>
+</h1>
+<p>Please note: it takes approximately 1 minute to load the city data on the map</p>
+</div>
+
+<section>
+<div id="map"></div>
+</section>
+
+<script src="map.js"></script> 
+
+<%- include("./partials/footer.ejs") %>

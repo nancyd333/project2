@@ -25,7 +25,7 @@ source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/si
 //TODO
 
 ## Technologies
-- Java Script
+- JavaScript
 - HTML 
 - CSS
 - Express
@@ -95,6 +95,12 @@ source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/si
 ## Source citations
 - [Leaflet | Open Street Maps](https://leafletjs.com/)
 - [AQI API from api-ninjas.com](https://api-ninjas.com/api/airquality)
+- [SimpleMaps](https://simplemaps.com/data/us-cities)
+- [Air Now - US EPA](http://www.airnow.gov)
+- [World Air Quality Indext Project](https://waqi.info/)
+
+Note: API from
+[The World Quailty Index Project - API](https://aqicn.org/api/)
 
 
 
