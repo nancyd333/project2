@@ -1,0 +1,33 @@
+<%- include("./partials/header.ejs") %>
+
+<div id="content">
+
+    <div>Search
+    <form action="/search" method="get" id="form1">
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required />
+        <button type="submit" form="form1" value="city">Submit</button>
+    </form>
+
+    <form action="/search" method="post">
+        <input hidden type="text"  name="city" value="<%=city%>" required/>
+        <button type="submit" > Add results to favorites</button>
+    </form>
+
+    <div>Results</div>
+    <p>City: <%=city%></p>
+    <p>Overall AQI: <%=aqiData.overall_aqi%></p>
+    <p>CO: <%=aqiData.CO.aqi%></p>
+    <p>PM10: <%=aqiData.PM10.aqi%></p>
+    <p>PM2.5: <%=aqiData["PM2.5"].aqi%></p>
+    <p>SO2: <%=aqiData.SO2.aqi%></p>
+    <p>O3: <%=aqiData.O3.aqi%></p>
+    <p>NO2: <%=aqiData.NO2.aqi%></p>
+    
+</div>
+
+
+</div>
+
+
+<%- include("./partials/footer.ejs") %>
