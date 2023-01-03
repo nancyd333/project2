@@ -1,5 +1,6 @@
 body{
-    background-color:  rgba(83,158,249,1);
+    background-color: rgb(52,58,63);
+     /* rgba(83,158,249,1); */
    
 }
 
@@ -7,18 +8,6 @@ body{
 #map { 
     height: 750px; 
     width: 1500px;
-}
-
-header{
-    grid-area: head;
-    margin: 2px;
-    font-size: 30px;
-}
-
-nav{
-    grid-area: nav;
-    margin: 2px;
-    font-size: 30px;
 }
 
 .green{

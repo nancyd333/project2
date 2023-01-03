@@ -102,7 +102,7 @@ app.get('/api/cities', async (req, res)=>{
     try{
         const allCities = await db.city.findAll({
             raw: true,
-            // limit: 3 //adding limit for testing since API has a limit on the number of calls
+            limit: 3 //adding limit for testing since API has a limit on the number of calls
         })
         //console.log(typeof allFav[0].changed) // this shows the type of object being returned
         for(const city of allCities){
@@ -120,11 +120,12 @@ app.get('/api/cities', async (req, res)=>{
 
 app.get('/search', async (req,res)=>{
     try{
+        let titleCaseCityName = req.query.city.split(" ").reduce( (s, c) => s +""+(c.charAt(0).toUpperCase() + c.slice(1) +" "), '').trim();
         let aqiData = await getAqiApiData(req.query.city) 
         res.render('search',{ 
         aqiData: aqiData,
         aqiColor: getAqiColor(aqiData.overall_aqi),
-        city: req.query.city
+        city: titleCaseCityName
     })
     } catch (err){
         console.log("error", err)
@@ -139,7 +140,7 @@ app.post('/search', async(req,res)=>{
         const dbCity = await db.city.findOne({
             where:{city: titleCaseCityName}
         })
-        const newFavorite = db.favorite.findOrCreate({
+        const newFavorite = await db.favorite.findOrCreate({
             where:{
                 cityId: dbCity.id,
                 date: new DATEONLY
@@ -156,6 +157,20 @@ app.post('/search', async(req,res)=>{
                 comments: ''
           }
         })
+        const allFav = await db.favorite.findAll({
+            where: {userId: res.locals.user.id},
+            include: [db.user,db.city],
+            order: [
+            ['id', 'DESC']
+            ]
+        })
+        
+        for(const fav of allFav){
+            fav.overall_aqi_color = getAqiColor(fav.aqi)
+        }
+
+        await res.render('favorite',{allFav})
+       
     } catch(err){
       console.log("error",err)
     }

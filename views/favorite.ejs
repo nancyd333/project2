@@ -13,6 +13,8 @@
         <p>Date saved:<%= fav.date %> </p>
         <p>color:<%= fav.overall_aqi_color %> </p>
         <p>Notes:</p>
+        
+  
         <form action="/favorite" method="post">
             <textarea name="comment" maxlength="250" rows="3" cols="100" placeholder="Enter up to to 250 characters"><%=fav.comments%></textarea>
             <input type="hidden" name="id" value="<%=fav.id%>">
