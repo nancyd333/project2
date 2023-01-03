@@ -13,6 +13,27 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 }
 
+var legend = L.control({ position: "bottomleft" });
+
+function createLegend(){
+legend.onAdd = function(map) {
+  var div = L.DomUtil.create("div", "legend");
+  div.innerHTML += "<h4>AQI Legend</h4>";
+  div.innerHTML += '<i style="background: #7bc950"></i><span>0-50</span><br>';
+  div.innerHTML += '<i style="background: #feffbe"></i><span>51-100</span><br>';
+  div.innerHTML += '<i style="background: #f06543"></i><span>101-150</span><br>';
+  div.innerHTML += '<i style="background: #b80600"></i><span>151-200</span><br>';
+  div.innerHTML += '<i style="background: #5d2e8f"></i><span>201-300</span><br>';
+  div.innerHTML += '<i style="background: #7e2e10"></i><span>301+</span><br>';
+  
+  
+  return div;
+};
+
+legend.addTo(map);
+}
+
+
 //create variable for the circle object that will be layered on the map
 let circle1 = null
 
@@ -31,6 +52,7 @@ function addLayer(lat, long, color, aqi, city){
 function renderMap(){
     //first the map is created on the page
     createMap()
+    createLegend()
 
     //then the data is retrieved to populate the circles on the map, the circle is creted with addLayer and a popup is populated as well
     fetch('/api/cities')
@@ -44,6 +66,8 @@ function renderMap(){
             )}
         })
 }
+
+
 
 renderMap()
 
