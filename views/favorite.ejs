@@ -1,31 +1,36 @@
 <%- include("./partials/header.ejs") %>
 
 <% allFav.forEach((fav)=> { %>
-    <div class="<%=fav.overall_aqi_color%>">
-        <h2><%= fav.city.city %> </h2>
-        <p>Overall AQI: <%= fav.aqi %> </p>
-        <p>CO aqi: <%= fav.aqi_co %> 
-        PM10 aqi: <%= fav.aqi_pm10 %> 
-        PM2.5 aqi: <%= fav.aqi_pm2_5 %> 
-        SO2 aqi: <%= fav.aqi_so2 %> 
-        O3 aqi: <%= fav.aqi_o3 %> 
-        NO2 aqi: <%= fav.aqi_no2 %> </p>
-        <p>Date saved:<%= fav.date %> </p>
-        <p>color:<%= fav.overall_aqi_color %> </p>
-        <p>Notes:</p>
-        
-  
-        <form action="/favorite" method="post">
-            <textarea name="comment" maxlength="250" rows="3" cols="100" placeholder="Enter up to to 250 characters"><%=fav.comments%></textarea>
+
+    <div class="card <%=fav.overall_aqi_color%>">
+        <h5 class="card-header"><%= fav.city.city %></h5>
+        <div class="card-body">
+          <h5 class="card-title">Overall AQI: <%= fav.aqi %> </h5>
+          <p class="card-text">
+            CO aqi: <%= fav.aqi_co %> 
+            PM10 aqi: <%= fav.aqi_pm10 %> 
+            PM2.5 aqi: <%= fav.aqi_pm2_5 %> 
+            SO2 aqi: <%= fav.aqi_so2 %> 
+            O3 aqi: <%= fav.aqi_o3 %> 
+            NO2 aqi: <%= fav.aqi_no2 %>             
+          </p>
+          <p>Date added to favorites:<%= fav.date %> </p>
+          <div>
+          <form action="/favorite" method="post">
+            <textarea id="textarea" name="comment" maxlength="250" rows="3" cols="100" placeholder="Enter notes here and save. Type up to 250 characters"><%=fav.comments%></textarea>
             <input type="hidden" name="id" value="<%=fav.id%>">
-            <button type="submit">save note changes</input>
-        </form>
+            <button type="submit" class="btn btn-primary mb-4">save notes</input>
+            </form>
+        </div>
         <form action="/favorite?_method=DELETE" method="post">
             <input type="hidden" name="deleteId" value="<%=fav.id%>">
             <input type="hidden" name="delete" value="delete">
-            <button type="submit">delete this favorite</input>
+            <button type="submit" class="btn btn-outline-dark btn-sm">permanently delete this favorite</input>
         </form>
-    </div>
+        
+        </div>
+      </div>
+   
     <% }); %>
 
     
