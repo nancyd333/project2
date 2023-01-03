@@ -3,9 +3,6 @@
 // lat and long tell the map the coordinates to use to center the map
 var map = L.map('map').setView([40.813600, -96.702610], 5); 
 
-//create variable for the circle object that will be layered on the map
-const circle1 = null
-
 //leaflet uses openstreet maps to get the tiles and adds it the map object
 //you can set a maxZoom here
 function createMap(){
@@ -15,6 +12,9 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 }
+
+//create variable for the circle object that will be layered on the map
+let circle1 = null
 
 //function to add circles to map based on city and aqi index number
 function addLayer(lat, long, color, aqi, city){
@@ -32,17 +32,17 @@ function renderMap(){
     //first the map is created on the page
     createMap()
 
-    // //then the data is retrieved to populate the circles on the map, the circle is creted with addLayer and a popup is populated as well
-    // fetch('/api/cities')
-    //     .then((res)=>{
-    //         return res.json();
-    //     })
-    //     .then((cities)=>{
-    //         for(const aqi of cities.allCities){
-    //             addLayer(aqi.lat, aqi.lng,aqi.overall_aqi_color,aqi.overall_aqi_num,aqi.city)
-    //             circle1.bindPopup(`AQI: ${aqi.overall_aqi_num} (city: ${aqi.city})`
-    //         )}
-    //     })
+    //then the data is retrieved to populate the circles on the map, the circle is creted with addLayer and a popup is populated as well
+    fetch('/api/cities')
+        .then((res)=>{
+            return res.json();
+        })
+        .then((cities)=>{
+            for(const aqi of cities.allCities){
+                addLayer(aqi.lat, aqi.lng,aqi.overall_aqi_color,aqi.overall_aqi_num,aqi.city)
+                circle1.bindPopup(`AQI: ${aqi.overall_aqi_num} (city: ${aqi.city})`
+            )}
+        })
 }
 
 renderMap()

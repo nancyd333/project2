@@ -96,7 +96,27 @@ async function getAqiApiData(city){
   } 
   
 
-  //routes and controllers
+//routes and controllers
+
+app.get('/api/cities', async (req, res)=>{
+    try{
+        const allCities = await db.city.findAll({
+            raw: true,
+            // limit: 3 //adding limit for testing since API has a limit on the number of calls
+        })
+        //console.log(typeof allFav[0].changed) // this shows the type of object being returned
+        for(const city of allCities){
+          const aqiData = await getAqiApiData(city.city)
+          city.overall_aqi_num = aqiData.overall_aqi
+          city.overall_aqi_color = getAqiColor(aqiData.overall_aqi)
+        }
+        //console.log(allCities[0])
+        //returns data in json format to the browser for the map.js to consume and make AQI cicles
+        res.json({allCities})
+    } catch(err){
+        console.log("error",err)
+    }
+})
 
 app.get('/search', async (req,res)=>{
     try{
