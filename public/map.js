@@ -19,12 +19,12 @@ function createLegend(){
 legend.onAdd = function(map) {
   var div = L.DomUtil.create("div", "legend");
   div.innerHTML += "<h4>AQI Legend</h4>";
-  div.innerHTML += '<i style="background: #7bc950"></i><span>0-50</span><br>';
-  div.innerHTML += '<i style="background: #feffbe"></i><span>51-100</span><br>';
-  div.innerHTML += '<i style="background: #f06543"></i><span>101-150</span><br>';
-  div.innerHTML += '<i style="background: #b80600"></i><span>151-200</span><br>';
-  div.innerHTML += '<i style="background: #5d2e8f"></i><span>201-300</span><br>';
-  div.innerHTML += '<i style="background: #7e2e10"></i><span>301+</span><br>';
+  div.innerHTML += '<i style="background: #7bc950"></i><span>0-50 Good</span><br>';
+  div.innerHTML += '<i style="background: #feffbe"></i><span>51-100 Moderate</span><br>';
+  div.innerHTML += '<i style="background: #f06543"></i><span>101-150 Unhealthy for Sensitive Groups</span><br>';
+  div.innerHTML += '<i style="background: #b80600"></i><span>151-200 Unhealthy</span><br>';
+  div.innerHTML += '<i style="background: #5d2e8f"></i><span>201-300 Very Unhealthy</span><br>';
+  div.innerHTML += '<i style="background: #7e2e10"></i><span>301+ Hazardous</span><br>';
   
   
   return div;

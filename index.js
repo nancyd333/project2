@@ -7,11 +7,13 @@ const cookieParser = require('cookie-parser')
 const db = require('./models')
 const { defaults } = require('pg');
 const { DATEONLY } = require('sequelize');
-const crypto = require('crypto-js')
+const crypto = require('crypto-js');
+const city = require('./models/city');
+const { sequelize } = require('./models');
 
 //app config
 const app = express()
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 3000
 const API_KEY = process.env.API_KEY //key for aqi api data
 app.set('view engine', 'ejs')
 app.use(methodOverride('_method')) //middleware to allow for delete method in HTTP request
@@ -182,7 +184,7 @@ app.get('/favorite', async (req,res)=>{
             where: {userId: res.locals.user.id},
             include: [db.user,db.city],
             order: [
-            ['id', 'DESC']
+            ['date', 'DESC']
             ]
         })
         
@@ -196,6 +198,50 @@ app.get('/favorite', async (req,res)=>{
       console.log("error",err)
     }
   })
+
+app.get('/favorite/city', async (req,res)=>{
+    try{
+        const allFav = await db.favorite.findAll({
+            // 'select * from favorites f left join users u on u.id = f."userId" left join cities c on c.id = f."cityId" order by c.city desc '
+            where: {userId: res.locals.user.id},
+            include: [db.user,db.city],
+            order: [[db.city, 'city', 'DESC']]
+        })
+    
+
+        for(const fav of allFav){
+            fav.overall_aqi_color = getAqiColor(fav.aqi)
+        }s
+        
+        res.render('favorite',{allFav})
+
+    } catch(err){
+        console.log("error",err)
+    }
+})
+
+app.get('/favorite/aqi', async (req,res)=>{
+    try{
+        const allFav = await db.favorite.findAll({
+            where: {userId: res.locals.user.id},
+            include: [db.user,db.city],
+            order: [
+            ['aqi', 'DESC']
+            ]
+        })
+        console.log(allFav)
+        
+        for(const fav of allFav){
+            fav.overall_aqi_color = getAqiColor(fav.aqi)
+        }
+        
+        res.render('favorite',{allFav})
+    
+    } catch(err){
+        console.log("error",err)
+    }
+})
+
 
 app.post('/favorite',async(req,res)=>{
     try{

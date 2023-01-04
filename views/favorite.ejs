@@ -14,7 +14,7 @@
             O3 aqi: <%= fav.aqi_o3 %> 
             NO2 aqi: <%= fav.aqi_no2 %>             
           </p>
-          <p>Date added to favorites:<%= fav.date %> </p>
+          <p>Date added to favorites: <%= fav.date %> </p>
           <div>
           <form action="/favorite" method="post">
             <textarea id="textarea" name="comment" maxlength="250" rows="3" cols="100" placeholder="Enter notes here and save. Type up to 250 characters"><%=fav.comments%></textarea>
