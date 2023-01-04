@@ -3,18 +3,21 @@
 <% allFav.forEach((fav)=> { %>
 
     <div class="card <%=fav.overall_aqi_color%>">
-        <h5 class="card-header"><%= fav.city.city %></h5>
+        <h4 class="card-header"><%= fav.city.city %></h4>
         <div class="card-body">
-          <h5 class="card-title">Overall AQI: <%= fav.aqi %> </h5>
+          <h5 class="card-title">Overall AQI: <strong><%= fav.aqi %></strong> </h5>
+          <h6><strong><%=fav.level%></strong></h6>
+          <p><%=fav.healthImplications %></p>
           <p class="card-text">
-            CO aqi: <%= fav.aqi_co %> 
-            PM10 aqi: <%= fav.aqi_pm10 %> 
-            PM2.5 aqi: <%= fav.aqi_pm2_5 %> 
-            SO2 aqi: <%= fav.aqi_so2 %> 
-            O3 aqi: <%= fav.aqi_o3 %> 
-            NO2 aqi: <%= fav.aqi_no2 %>             
+            [CO aqi <strong><%= fav.aqi_co %></strong>] 
+            [PM10 aqi <strong><%= fav.aqi_pm10 %> </strong>] 
+            [PM2.5 aqi <strong><%= fav.aqi_pm2_5 %> </strong>] 
+            [SO2 aqi <strong><%= fav.aqi_so2 %> </strong>] 
+            [O3 aqi <strong><%= fav.aqi_o3 %> </strong>] 
+            [NO2 aqi <strong><%= fav.aqi_no2 %>  </strong>] 
           </p>
-          <p>Date added to favorites: <%= fav.date %> </p>
+      
+          <p>dated <%= fav.date %> </p>
           <div>
           <form action="/favorite" method="post">
             <textarea id="textarea" name="comment" maxlength="250" rows="3" cols="100" placeholder="Enter notes here and save. Type up to 250 characters"><%=fav.comments%></textarea>

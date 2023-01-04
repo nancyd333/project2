@@ -144,6 +144,13 @@ async function getAqiApiData(city){
     }
   } 
 
+async function getAqiInfo(color){
+    const aqiInfo = await db.air_quality_index_desc.findOne({
+        where: {color: color}
+    })
+    console.log(aqiInfo.dataValues)
+    return aqiInfo.dataValues;
+    }
 
 
 
@@ -258,8 +265,14 @@ app.get('/favorite', async (req,res)=>{
             ]
         })
         
+        
+        let aqiInfo = null
+
         for(const fav of allFav){
-            fav.overall_aqi_color = getAqiColor(fav.aqi)
+            fav.overall_aqi_color = await getAqiColor(fav.aqi)
+            aqiInfo = await getAqiInfo(getAqiColor(fav.aqi))
+            fav.level = aqiInfo.level
+            fav.healthImplications = aqiInfo.health_implications
         }
       
         res.render('favorite',{allFav})
@@ -279,8 +292,13 @@ app.get('/favorite/city', async (req,res)=>{
         })
     
 
+        let aqiInfo = null
+
         for(const fav of allFav){
-            fav.overall_aqi_color = getAqiColor(fav.aqi)
+            fav.overall_aqi_color = await getAqiColor(fav.aqi)
+            aqiInfo = await getAqiInfo(getAqiColor(fav.aqi))
+            fav.level = aqiInfo.level
+            fav.healthImplications = aqiInfo.health_implications
         }
         
         res.render('favorite',{allFav})
@@ -299,10 +317,14 @@ app.get('/favorite/aqi', async (req,res)=>{
             ['aqi', 'DESC']
             ]
         })
-        console.log(allFav)
         
+        let aqiInfo = null
+
         for(const fav of allFav){
-            fav.overall_aqi_color = getAqiColor(fav.aqi)
+            fav.overall_aqi_color = await getAqiColor(fav.aqi)
+            aqiInfo = await getAqiInfo(getAqiColor(fav.aqi))
+            fav.level = aqiInfo.level
+            fav.healthImplications = aqiInfo.health_implications
         }
         
         res.render('favorite',{allFav})
