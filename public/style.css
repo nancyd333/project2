@@ -10,23 +10,27 @@ body{
     width: 1500px;
 }
 
+
+
+
 .green{
-    background-color: #7bc950;
+    background-color:rgb(123,201,80);
 }
 .yellow{
-    background-color: #feffbe;
+    background-color: rgb(254, 225, 52);
+     /* rgb(252,191,73); */
 }
 .orange{
-    background-color: #f06543;
+    background-color: rgb(255, 170, 51);
 }
 .red{
-    background-color: #b80600;
+    background-color: rgb(184,6,0);
 }
 .purple{
-    background-color: #5d2e8f;
+    background-color: rgb(93,46,143);
 }
 .maroon{
-    background-color: #7e2e10;
+    background-color: rgb(126,46,16);
 }
 
 .legend {

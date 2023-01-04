@@ -10,6 +10,7 @@ const { DATEONLY } = require('sequelize');
 const crypto = require('crypto-js');
 const city = require('./models/city');
 const { sequelize } = require('./models');
+const delay = require('delay');
 
 //app config
 const app = express()
@@ -63,72 +64,124 @@ app.use(async (req, res, next) =>{
 //     next()
 // })
 
+async function getCities(){
+    try{
+    allCities = await db.city.findAll({
+        raw: true,
+        limit: 2 //adding limit for testing since API has a limit on the number of calls
+        })
+        //console.log(allCities)
+        return allCities;
+    } catch (err){
+        console.log('error message ', err)
+    }
+}
 
+// app.use(async (req, res, next) => {
+//     try{
+//     //our code goes here
+//     const cityList = await getCities()
+
+//     //this is similar to 'morgan'
+//     // console.log('hello from inside the middleware')
+//     // console.log(`incoming request: ${req.method} - ${req.url}`)
+//     //res.locals are a place we can put data to share with 'downstream routes' (routes under this route)
+//     // res.locals.myData = 'hello i am data'
+    
+//     const cityData = JSON.stringify(cityList)
+//     res.locals.city = cityData.city
+//     console.log("res.local output", city)
+//     //console.log("city data output", cityData)
+//     //invoke next to go to the next route or middleware
+//     next()
+//     }  catch (err){
+//         console.log('error in cities middleware: ', err)
+//         //explicitely set user to null if there is an error
+//         res.locals.cityData = null
+//         next() //go to the next thing
+//     }
+
+// })
 
 //functions
 
 //get data from api for one city
 async function getAqiApiData(city){
-    const aqiRequest = axios({
+    const aqiRequest = await axios({
       method: 'get',
       url:  `https://api.api-ninjas.com/v1/airquality?city=${city}`,
-      headers: {'X-Api-Key': API_KEY}
+      headers: {'X-Api-Key': API_KEY},
     }) 
     
     const aqiResponse = await aqiRequest
-    const aqiData = aqiResponse.data
+    const aqiData = await aqiResponse.data
+    //console.log(aqiData)
     return aqiData;
   }
 
   //returns the color associated with the AQI 
   function getAqiColor(aqiIndexNum){
     if (aqiIndexNum <= 50){
-      return 'green';
+        return 'green';
+        // return 'rgb(123,201,80)'; //green
     } else if(aqiIndexNum <= 100){
-      return 'yellow';
+        return 'yellow';
+    //   return 'rgb(254, 225, 52)'; //yellow
     }  else if(aqiIndexNum <= 150){
-      return 'orange';
+        return 'orange';
+    //   return 'rgb(255, 170, 51)';//orange
     }  else if(aqiIndexNum <= 200){
-      return 'red';
+        return 'red';
+    //   return 'rgb(184,6,0)';//red
     }  else if(aqiIndexNum <= 300){
-      return 'purple';
+        return 'purple';
+    //   return 'rgb(93,46,143)';//purple
     } else if(aqiIndexNum >= 301){
-      return 'maroon';
+        return 'maroon';
+    //   return 'rgb(126,46,16)';//maroon
     } else {
       return 'grey';
     }
   } 
-  
 
-let cachedAqiCityData = null
+
+
+
+
+//let cachedAqiCityData = null
 
 async function getMapData(){
- if(cachedAqiCityData === null){
-    const allCities = await db.city.findAll({
-        raw: true,
-        //limit: 3 //adding limit for testing since API has a limit on the number of calls
-    })
+ try{
+    //if(cachedAqiCityData === null){
+    // const allCities = await db.city.findAll({
+    //     raw: true,
+    //     limit: 2 //adding limit for testing since API has a limit on the number of calls
+    // })
+    allCities = await getCities()
     //console.log(typeof allFav[0].changed) // this shows the type of object being returned
     for(const city of allCities){
       const aqiData = await getAqiApiData(city.city)
-      city.overall_aqi_num = aqiData.overall_aqi
-      city.overall_aqi_color = getAqiColor(aqiData.overall_aqi)
+      city.overall_aqi_num = await aqiData.overall_aqi
+      city.overall_aqi_color = await getAqiColor(aqiData.overall_aqi)
     }
     // console.log(allCities[0])
     //returns data in json format to the browser for the map.js to consume and make AQI cicles
-    cachedAqiCityData = allCities
+    //cachedAqiCityData = allCities
     // console.log(cachedAqiCityData)
     
-    }
-    return cachedAqiCityData;
+    //}
+    return allCities;
+ } catch(err){
+    console.log("ERROR MESSAGE INFO: ", err)
+ }
  }
 
 //routes and controllers
 
 app.get('/api/cities', async (req, res)=>{
     try{
-    allCities = await getMapData()
-    res.json({allCities})
+        allCities = await getMapData()
+        res.json({allCities})
     //console.log(res.json({allCities}))
     } catch(err){
         console.log("error",err)

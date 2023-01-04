@@ -14,18 +14,45 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 }
 
+
+//get color
+function getAqiColor(aqiIndexNum){
+    if (aqiIndexNum <= 50){
+        // return 'green';
+        return 'rgb(123,201,80)';
+    } else if(aqiIndexNum <= 100){
+        // return 'yellow';
+      return 'rgb(254, 225, 52)'; 
+    }  else if(aqiIndexNum <= 150){
+        // return 'orange';
+      return 'rgb(255, 170, 51)';
+    }  else if(aqiIndexNum <= 200){
+        // return 'red';
+      return 'rgb(184,6,0)';
+    }  else if(aqiIndexNum <= 300){
+        // return 'purple';
+      return 'rgb(93,46,143)';
+    } else if(aqiIndexNum >= 301){
+        // return 'maroon';
+      return 'rgb(126,46,16)';
+    } else {
+      return 'grey';
+    }
+  } 
+
+
 var legend = L.control({ position: "bottomleft" });
 
 function createLegend(){
 legend.onAdd = function(map) {
   var div = L.DomUtil.create("div", "legend");
   div.innerHTML += "<h4>AQI Legend</h4>";
-  div.innerHTML += '<i style="background: #7bc950"></i><span>0-50 Good</span><br>';
-  div.innerHTML += '<i style="background: #feffbe"></i><span>51-100 Moderate</span><br>';
-  div.innerHTML += '<i style="background: #f06543"></i><span>101-150 Unhealthy for Sensitive Groups</span><br>';
-  div.innerHTML += '<i style="background: #b80600"></i><span>151-200 Unhealthy</span><br>';
-  div.innerHTML += '<i style="background: #5d2e8f"></i><span>201-300 Very Unhealthy</span><br>';
-  div.innerHTML += '<i style="background: #7e2e10"></i><span>301+ Hazardous</span><br>';
+  div.innerHTML += '<i style="background: rgb(123,201,80)"></i><span>0-50 Good</span><br>';
+  div.innerHTML += '<i style="background: rgb(254, 225, 52)"></i><span>51-100 Moderate</span><br>';
+  div.innerHTML += '<i style="background: rgb(255, 170, 51)"></i><span>101-150 Unhealthy for Sensitive Groups</span><br>';
+  div.innerHTML += '<i style="background: rgb(184,6,0)"></i><span>151-200 Unhealthy</span><br>';
+  div.innerHTML += '<i style="background: rgb(93,46,143)"></i><span>201-300 Very Unhealthy</span><br>';
+  div.innerHTML += '<i style="background: rgb(126,46,16)"></i><span>301+ Hazardous</span><br>';
   
   
   return div;
@@ -62,7 +89,7 @@ function renderMap(){
         })
         .then((cities)=>{
             for(const aqi of cities.allCities){
-                addLayer(aqi.lat, aqi.lng,aqi.overall_aqi_color,aqi.overall_aqi_num,aqi.city)
+                addLayer(aqi.lat, aqi.lng,getAqiColor(aqi.overall_aqi_num),aqi.overall_aqi_num,aqi.city)
                 circle1.bindPopup(`AQI: ${aqi.overall_aqi_num} (city: ${aqi.city})`
             )}
         })
