@@ -63,6 +63,8 @@ app.use(async (req, res, next) =>{
 //     next()
 // })
 
+
+
 //functions
 
 //get data from api for one city
@@ -98,27 +100,42 @@ async function getAqiApiData(city){
   } 
   
 
+let cachedAqiCityData = null
+
+async function getMapData(){
+ if(cachedAqiCityData === null){
+    const allCities = await db.city.findAll({
+        raw: true,
+        //limit: 3 //adding limit for testing since API has a limit on the number of calls
+    })
+    //console.log(typeof allFav[0].changed) // this shows the type of object being returned
+    for(const city of allCities){
+      const aqiData = await getAqiApiData(city.city)
+      city.overall_aqi_num = aqiData.overall_aqi
+      city.overall_aqi_color = getAqiColor(aqiData.overall_aqi)
+    }
+    // console.log(allCities[0])
+    //returns data in json format to the browser for the map.js to consume and make AQI cicles
+    cachedAqiCityData = allCities
+    // console.log(cachedAqiCityData)
+    
+    }
+    return cachedAqiCityData;
+ }
+
 //routes and controllers
 
 app.get('/api/cities', async (req, res)=>{
     try{
-        const allCities = await db.city.findAll({
-            raw: true,
-            limit: 3 //adding limit for testing since API has a limit on the number of calls
-        })
-        //console.log(typeof allFav[0].changed) // this shows the type of object being returned
-        for(const city of allCities){
-          const aqiData = await getAqiApiData(city.city)
-          city.overall_aqi_num = aqiData.overall_aqi
-          city.overall_aqi_color = getAqiColor(aqiData.overall_aqi)
-        }
-        //console.log(allCities[0])
-        //returns data in json format to the browser for the map.js to consume and make AQI cicles
-        res.json({allCities})
+    allCities = await getMapData()
+    res.json({allCities})
+    //console.log(res.json({allCities}))
     } catch(err){
         console.log("error",err)
     }
 })
+
+setInterval(()=>{cachedAqiCityData = null},12*60*60*1000)
 
 app.get('/search', async (req,res)=>{
     try{
@@ -211,7 +228,7 @@ app.get('/favorite/city', async (req,res)=>{
 
         for(const fav of allFav){
             fav.overall_aqi_color = getAqiColor(fav.aqi)
-        }s
+        }
         
         res.render('favorite',{allFav})
 

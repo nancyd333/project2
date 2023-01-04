@@ -1,7 +1,8 @@
 //creates base map object used by all other functions in this script
 //setView([lat, long], zoom level ) 
 // lat and long tell the map the coordinates to use to center the map
-var map = L.map('map').setView([40.813600, -96.702610], 5); 
+var map = L.map('map').setView([39.1238,-94.5541], 5)
+//([40.813600, -96.702610], 5); 
 
 //leaflet uses openstreet maps to get the tiles and adds it the map object
 //you can set a maxZoom here
