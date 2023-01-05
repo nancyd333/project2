@@ -119,10 +119,10 @@ async function getAllCities(){
 //functions
 
 //get data from api for one city
-async function getAqiApiData(city){
+async function getAqiApiData(city, state, country){
     const aqiRequest = await axios({
       method: 'get',
-      url:  `https://api.api-ninjas.com/v1/airquality?city=${city}`,
+      url:  `https://api.api-ninjas.com/v1/airquality?city=${city}&state=${state}&country=${country}`,
       headers: {'X-Api-Key': API_KEY},
     }) 
     
@@ -177,7 +177,7 @@ async function getMapData(){
     allCities = await getCities()
     //console.log(typeof allFav[0].changed) // this shows the type of object being returned
     for(const city of allCities){
-      const aqiData = await getAqiApiData(city.city)
+      const aqiData = await getAqiApiData(city.city, city.state_abbrv, city.country)
       city.overall_aqi_num = await aqiData.overall_aqi
       city.overall_aqi_color = await getAqiColor(aqiData.overall_aqi)
     }
@@ -227,12 +227,15 @@ setInterval(()=>{cachedAqiCityData = null},12*60*60*1000)
 
 app.get('/search', async (req,res)=>{
     try{
-        let titleCaseCityName = req.query.city.split(" ").reduce( (s, c) => s +""+(c.charAt(0).toUpperCase() + c.slice(1) +" "), '').trim();
-        let aqiData = await getAqiApiData(req.query.city) 
+        //let titleCaseCityName = 
+        //req.query.city.split(" ").reduce( (s, c) => s +""+(c.charAt(0).toUpperCase() + c.slice(1) +" "), '').trim();
+        let aqiData = await getAqiApiData(req.query.city, req.query.state_abbrv, req.query.country) 
         res.render('search',{ 
         aqiData: aqiData,
         aqiColor: getAqiColor(aqiData.overall_aqi),
-        city: titleCaseCityName
+        city: req.query.city,
+        state: req.query.state_abbrv,
+        country: req.query.country
     })
     } catch (err){
         console.log("error", err)
@@ -242,10 +245,14 @@ app.get('/search', async (req,res)=>{
 app.post('/search', async(req,res)=>{
     try{ 
         let cityName = req.body.city
-        let titleCaseCityName = cityName.split(" ").reduce( (s, c) => s +""+(c.charAt(0).toUpperCase() + c.slice(1) +" "), '').trim();
-        let aqiData = await getAqiApiData(titleCaseCityName)  
+        cityName = cityName.split(',')
+
+        //console.log("city name :", cityName[0], cityName[1].trim(), cityName[2].trim())
+        //let titleCaseCityName = cityName.split(" ").reduce( (s, c) => s +""+(c.charAt(0).toUpperCase() + c.slice(1) +" "), '').trim();
+        
+        let aqiData = await getAqiApiData(cityName[0].trim(), cityName[1].trim(), cityName[2].trim())  
         const dbCity = await db.city.findOne({
-            where:{city: titleCaseCityName}
+            where:{city: cityName[0].trim()}
         })
         const newFavorite = await db.favorite.findOrCreate({
             where:{

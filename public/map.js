@@ -47,12 +47,12 @@ function createLegend(){
 legend.onAdd = function(map) {
   var div = L.DomUtil.create("div", "legend");
   div.innerHTML += "<h4>AQI Legend</h4>";
-  div.innerHTML += '<i style="background: rgb(123,201,80)"></i><span>0-50 Good</span><br>';
-  div.innerHTML += '<i style="background: rgb(254, 225, 52)"></i><span>51-100 Moderate</span><br>';
-  div.innerHTML += '<i style="background: rgb(255, 170, 51)"></i><span>101-150 Unhealthy for Sensitive Groups</span><br>';
-  div.innerHTML += '<i style="background: rgb(184,6,0)"></i><span>151-200 Unhealthy</span><br>';
-  div.innerHTML += '<i style="background: rgb(93,46,143)"></i><span>201-300 Very Unhealthy</span><br>';
-  div.innerHTML += '<i style="background: rgb(126,46,16)"></i><span>301+ Hazardous</span><br>';
+  div.innerHTML += '<i class="green"></i><span>0-50 Good</span><br>';
+  div.innerHTML += '<i class="yellow"></i><span>51-100 Moderate</span><br>';
+  div.innerHTML += '<i class="orange"></i><span>101-150 Unhealthy for Sensitive Groups</span><br>';
+  div.innerHTML += '<i class="red"></i><span>151-200 Unhealthy</span><br>';
+  div.innerHTML += '<i class="purple"></i><span>201-300 Very Unhealthy</span><br>';
+  div.innerHTML += '<i class="maroon"></i><span>301+ Hazardous</span><br>';
   
   
   return div;
@@ -69,6 +69,7 @@ let circle1 = null
 function addLayer(lat, long, color, aqi, city){
         circle1 = L.circle([lat,long], {
         color: color,
+        class: "leaflet-interactive yellow",
         fillColor: color,
         fillOpacity: 0.5,
         radius: aqi * 1000, //the aqi index number creates a radius that is too small to see on the map, therefore it's multiplied by 1000
@@ -90,7 +91,7 @@ function renderMap(){
         .then((cities)=>{
             for(const aqi of cities.allCities){
                 addLayer(aqi.lat, aqi.lng,getAqiColor(aqi.overall_aqi_num),aqi.overall_aqi_num,aqi.city)
-                circle1.bindPopup(`AQI: ${aqi.overall_aqi_num} (city: ${aqi.city})`
+                circle1.bindPopup(`AQI: ${aqi.overall_aqi_num} (city: ${aqi.city}, ${aqi.state_abbrv})`
             )}
         })
 }

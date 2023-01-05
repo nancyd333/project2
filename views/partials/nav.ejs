@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">AQI Tracker</a>
+  <a class="navbar-brand" href="#">AQI Tracker (Main U.S. Cities)</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -33,16 +33,16 @@
 
     </ul>
     <form class="form-inline" action="/search" method="get" id="homeSearch">
-      <input class="form-control mr-sm-2" list="datalistOptions" type="search" placeholder="Seach for major US city" aria-label="Search"  id="homeSearch"  name="city" required >
+      <input class="form-control mr-sm-2" list="datalistOptions" type="search" placeholder="Select city" aria-label="Search"  id="homeSearch"  name="city" required >
       <datalist id="datalistOptions">
 
                       <% let newlist  = list%>
                       <% for(const a of newlist){ %>
-                        <option value= "<%=a.city%>" > 
+                        <option value= "<%=a.city%>, <%=a.state_abbrv%>, <%=a.country%>" > 
                           <% }%>
 
       </datalist>
-        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" value="city">Search Major U.S. City</button>
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" value="city">Search Main U.S. City</button>
       </form>
   </div>
 </nav>
