@@ -1,24 +1,15 @@
 <%- include("./partials/header.ejs") %>
 
-<!-- <div id="content"> -->
-
-    <!-- <div>Search
-    <form action="/search" method="get" id="form1">
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" required />
-        <button type="submit" form="form1" value="city">Submit</button>
-    </form> -->
-    
-    
+  
     <div class="card border-dark text-center" >
         <div class="card-header">Search results</div>
-            <h2 class="card-title m-3"><%=city%></h2>
+
+            <h2 class="card-title m-3"><%=city%>, <%=state%></h2>
         
-        <!-- </div> -->
         <div class="card-body pt-0">
         <ul class="list-group list-group-flush">
             <div >
-                <li class = "list-group-item <%=aqiColor%>"><h3>Overall AQI: <strong><%=aqiData.overall_aqi%></strong></h3></li>
+                <li class = "list-group-item <%=aqiColor%>"><h3>Overall AQI: <strong><%=aqiData.overall_aqi%></strong></h3><h5><%=aqiLevel%></h5></li>
             </div>
           <li class="list-group-item">CO: <strong><%=aqiData.CO.aqi%></strong></li>
           <li class="list-group-item">PM10: <strong><%=aqiData.PM10.aqi%></strong></li>
@@ -28,39 +19,20 @@
           <li class="list-group-item">NO2: <strong><%=aqiData.NO2.aqi%></strong></li>
           <li class="list-group-item"></li>
         </ul>
-        <!-- <div class="card-body">
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
-        </div> -->
 
         </div>
 
         <%if(user){%>
             <form action="/search" method="post">
-                <input hidden type="text"  name="city" value="<%=city%>" required/>
+                <input hidden type="text"  name="city" value="<%=city%>, <%=state%>, <%=country%>" required/>
                 <button type="submit" class="btn btn-primary btn-lrg mb-5 mx-center" > Add result to favorites</button>
             </form>
             <%}%>
     </div>
 
-
-
-
-
-    <!-- <div>Results</div>
-    <p>City: <%=city%></p>
-    <p>Overall AQI: <%=aqiData.overall_aqi%></p>
-    <p>CO: <%=aqiData.CO.aqi%></p>
-    <p>PM10: <%=aqiData.PM10.aqi%></p>
-    <p>PM2.5: <%=aqiData["PM2.5"].aqi%></p>
-    <p>SO2: <%=aqiData.SO2.aqi%></p>
-    <p>O3: <%=aqiData.O3.aqi%></p>
-    <p>NO2: <%=aqiData.NO2.aqi%></p> -->
     
 </div>
 
-
-<!-- </div> -->
 
 
 <%- include("./partials/footer.ejs") %>

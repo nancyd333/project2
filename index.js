@@ -1,4 +1,4 @@
-//required packages
+//--REQUIRED packages--//
 require('dotenv').config()
 const express = require('express')
 const methodOverride = require('method-override');
@@ -10,9 +10,8 @@ const { DATEONLY } = require('sequelize');
 const crypto = require('crypto-js');
 const city = require('./models/city');
 const { sequelize } = require('./models');
-const delay = require('delay');
 
-//app config
+//--APP config--//
 const app = express()
 const PORT = process.env.PORT || 3000
 const API_KEY = process.env.API_KEY //key for aqi api data
@@ -22,8 +21,123 @@ app.use(express.urlencoded({extended: false})) //middleware to parse request bod
 app.use(cookieParser()) //tell express to parse incoming cookies
 app.use(express.static('public')) //tells express there are static files stored in folder named public
 
+//--VARIABLES--//
+let cachedAqiCityData = null
+
+
+//--FUNCTIONS--//
+
+//get cities from database
+//gets result set to populate map
+//limit is used for testing, since the API data has a limit (and the results depend on the cities returned)
+async function getCities(){
+    try{  
+        allCities = await db.city.findAll({
+            raw: true,
+            limit: 2 
+        })
+        
+        return allCities;
+
+    } catch(err){
+        console.log('error message ', err)
+    }
+}
+
+//get all cities from database
+//gets result set for the search autocomplete (used for individual city searches)
+//NOTE: keeping the calls for getting cities separate (getAllCitites vs getCities) made the API call more reliable
+async function getAllCities(){
+    try{
+    allCities = await db.city.findAll({
+            raw: true,
+        })
+        //console.log(allCities)
+        return allCities;
+    } catch (err){
+        console.log('error message ', err)
+    }
+}
+
+//get AQI data from API for one city
+async function getAqiApiData(city, state, country){
+    const aqiRequest = await axios({
+      method: 'get',
+      url:  `https://api.api-ninjas.com/v1/airquality?city=${city}&state=${state}&country=${country}`,
+      headers: {'X-Api-Key': API_KEY},
+    }) 
+    
+    const aqiResponse = await aqiRequest
+    const aqiData = await aqiResponse.data
+    //console.log(aqiData)
+    return aqiData;
+}
+
+//returns the color associated with the AQI, the colors are defined by creators of AQI
+//used to set the css class in the view (when that option is available)
+function getAqiColor(aqiIndexNum){
+    if (aqiIndexNum <= 50){
+        return 'green';
+        // return 'rgb(123,201,80)'; //green
+    } else if(aqiIndexNum <= 100){
+        return 'yellow';
+    //   return 'rgb(254, 225, 52)'; //yellow
+    }  else if(aqiIndexNum <= 150){
+        return 'orange';
+    //   return 'rgb(255, 170, 51)';//orange
+    }  else if(aqiIndexNum <= 200){
+        return 'red';
+    //   return 'rgb(184,6,0)';//red
+    }  else if(aqiIndexNum <= 300){
+        return 'purple';
+    //   return 'rgb(93,46,143)';//purple
+    } else if(aqiIndexNum >= 301){
+        return 'maroon';
+    //   return 'rgb(126,46,16)';//maroon
+    } else {
+      return 'grey'; // this is a catch all for when there is an error
+    }
+} 
+
+//returns supplemental information associated with AQI
+async function getAqiInfo(color){
+    const aqiInfo = await db.air_quality_index_desc.findOne({
+        where: {color: color}
+    })
+    //console.log(aqiInfo.dataValues)
+    return aqiInfo.dataValues;
+}
+
+//returns data about city, including longitude and latitude, and combines it with AQI data
+//checks if the AQI API data has been cached, if not it will preform an API call 
+//caching is done for performance and due to the API's frequent unavailability
+async function getMapData(){
+    try {
+        if(cachedAqiCityData === null){
+            allCities = await getCities()
+            //console.log(typeof allFav[0].changed) // this shows the type of object being returned
+    
+            for(const city of allCities){
+                const aqiData = await getAqiApiData(city.city, city.state_abbrv, city.country)
+                city.overall_aqi_num = await aqiData.overall_aqi
+                city.overall_aqi_color = await getAqiColor(aqiData.overall_aqi)
+            }
+            // console.log(allCities[0])
+    
+            //returns data in json format to the browser for the map.js to consume and make AQI cicles
+            cachedAqiCityData = allCities
+            // console.log(cachedAqiCityData)    
+        }
+        return cachedAqiCityData;
+    } catch(err){
+        console.log("ERROR MESSAGE getMapData: ", err)
+    }
+ }
+
+//-- ROUTES & CONTROLLERS -- //
+
 // custom auth middleware that checks the cookies for a user id
-// and it finds one, look up the user in the db
+// and if it finds one, looks up the user in the db
 // tells all downstream routes about this user
 app.use(async (req, res, next) =>{
     try{
@@ -51,151 +165,8 @@ app.use(async (req, res, next) =>{
     }
 })
 
-
-// //example custom middleware (incoming request logger)
-// app.use((req, res, next) => {
-//     //our code goes here
-//     //this is similar to 'morgan'
-//     // console.log('hello from inside the middleware')
-//     console.log(`incoming request: ${req.method} - ${req.url}`)
-//     //res.locals are a place we can put data to share with 'downstream routes' (routes under this route)
-//     // res.locals.myData = 'hello i am data'
-//     //invoke next to go to the next route or middleware
-//     next()
-// })
-
-async function getCities(){
-    try{
-    allCities = await db.city.findAll({
-        raw: true,
-        limit: 2 //adding limit for testing since API has a limit on the number of calls
-        })
-        //console.log(allCities)
-        return allCities;
-    } catch (err){
-        console.log('error message ', err)
-    }
-}
-
-async function getAllCities(){
-    try{
-    allCities = await db.city.findAll({
-        raw: true,
-        // limit: 2 //adding limit for testing since API has a limit on the number of calls
-        })
-        //console.log(allCities)
-        return allCities;
-    } catch (err){
-        console.log('error message ', err)
-    }
-}
-
-// app.use(async (req, res, next) => {
-//     try{
-//     //our code goes here
-//     const cityList = await getCities()
-
-//     //this is similar to 'morgan'
-//     // console.log('hello from inside the middleware')
-//     // console.log(`incoming request: ${req.method} - ${req.url}`)
-//     //res.locals are a place we can put data to share with 'downstream routes' (routes under this route)
-//     // res.locals.myData = 'hello i am data'
-    
-//     const cityData = JSON.stringify(cityList)
-//     res.locals.city = cityData.city
-//     console.log("res.local output", city)
-//     //console.log("city data output", cityData)
-//     //invoke next to go to the next route or middleware
-//     next()
-//     }  catch (err){
-//         console.log('error in cities middleware: ', err)
-//         //explicitely set user to null if there is an error
-//         res.locals.cityData = null
-//         next() //go to the next thing
-//     }
-
-// })
-
-//functions
-
-//get data from api for one city
-async function getAqiApiData(city, state, country){
-    const aqiRequest = await axios({
-      method: 'get',
-      url:  `https://api.api-ninjas.com/v1/airquality?city=${city}&state=${state}&country=${country}`,
-      headers: {'X-Api-Key': API_KEY},
-    }) 
-    
-    const aqiResponse = await aqiRequest
-    const aqiData = await aqiResponse.data
-    //console.log(aqiData)
-    return aqiData;
-  }
-
-  //returns the color associated with the AQI 
-  function getAqiColor(aqiIndexNum){
-    if (aqiIndexNum <= 50){
-        return 'green';
-        // return 'rgb(123,201,80)'; //green
-    } else if(aqiIndexNum <= 100){
-        return 'yellow';
-    //   return 'rgb(254, 225, 52)'; //yellow
-    }  else if(aqiIndexNum <= 150){
-        return 'orange';
-    //   return 'rgb(255, 170, 51)';//orange
-    }  else if(aqiIndexNum <= 200){
-        return 'red';
-    //   return 'rgb(184,6,0)';//red
-    }  else if(aqiIndexNum <= 300){
-        return 'purple';
-    //   return 'rgb(93,46,143)';//purple
-    } else if(aqiIndexNum >= 301){
-        return 'maroon';
-    //   return 'rgb(126,46,16)';//maroon
-    } else {
-      return 'grey';
-    }
-  } 
-
-async function getAqiInfo(color){
-    const aqiInfo = await db.air_quality_index_desc.findOne({
-        where: {color: color}
-    })
-    console.log(aqiInfo.dataValues)
-    return aqiInfo.dataValues;
-    }
-
-
-
-
-let cachedAqiCityData = null
-
-async function getMapData(){
- try{
-    if(cachedAqiCityData === null){
-
-    allCities = await getCities()
-    //console.log(typeof allFav[0].changed) // this shows the type of object being returned
-    for(const city of allCities){
-      const aqiData = await getAqiApiData(city.city, city.state_abbrv, city.country)
-      city.overall_aqi_num = await aqiData.overall_aqi
-      city.overall_aqi_color = await getAqiColor(aqiData.overall_aqi)
-    }
-    // console.log(allCities[0])
-    //returns data in json format to the browser for the map.js to consume and make AQI cicles
-    cachedAqiCityData = allCities
-    // console.log(cachedAqiCityData)
-    
-    }
-    // return allCities;
-    return cachedAqiCityData;
- } catch(err){
-    console.log("ERROR MESSAGE getMapData: ", err)
- }
- }
-
-//routes and controllers
-
+//list of cities in database combined with AQI data used to populate map
+//leaflet map is a static js, this is to provide data to that file to populate the circles client-side
 app.get('/api/cities', async (req, res)=>{ 
     try{
         allCities = await getMapData() 
@@ -211,6 +182,8 @@ app.get('/api/cities', async (req, res)=>{
     }
 })
 
+//gets data from all cities and makes it available to all views
+//primarily used to create the autocomplete list for bootstrap in the nav view
 app.use(async(req, res, next)=>{
     try{
         cityList = await getAllCities()
@@ -222,34 +195,35 @@ app.use(async(req, res, next)=>{
     }
 })
 
-//reset aqi data every 12 hrs
-setInterval(()=>{cachedAqiCityData = null},12*60*60*1000)
 
+//gets city and aqi data for city searched for use in view
 app.get('/search', async (req,res)=>{
     try{
-        //let titleCaseCityName = 
-        //req.query.city.split(" ").reduce( (s, c) => s +""+(c.charAt(0).toUpperCase() + c.slice(1) +" "), '').trim();
-        let aqiData = await getAqiApiData(req.query.city, req.query.state_abbrv, req.query.country) 
+        let cityName = req.query.city
+        cityName = cityName.split(',') 
+        let aqiData = await getAqiApiData(cityName[0].trim(), cityName[1].trim(), cityName[2].trim()) 
+        let aqiColor = await getAqiColor(aqiData.overall_aqi)
+        let aqiInfo =  await getAqiInfo(aqiColor)
+        
         res.render('search',{ 
-        aqiData: aqiData,
-        aqiColor: getAqiColor(aqiData.overall_aqi),
-        city: req.query.city,
-        state: req.query.state_abbrv,
-        country: req.query.country
-    })
+            aqiData: aqiData,
+            aqiColor: aqiColor,
+            aqiLevel: aqiInfo.level,
+            aqiHealthImplications: aqiInfo.health_implications,
+            city: cityName[0].trim(),
+            state: cityName[1].trim(),
+            country: cityName[2].trim()
+        })
     } catch (err){
         console.log("error", err)
     }
 })
 
+//saves city and aqi data for the user (and day) to favorites database
 app.post('/search', async(req,res)=>{
     try{ 
         let cityName = req.body.city
-        cityName = cityName.split(',')
-
-        //console.log("city name :", cityName[0], cityName[1].trim(), cityName[2].trim())
-        //let titleCaseCityName = cityName.split(" ").reduce( (s, c) => s +""+(c.charAt(0).toUpperCase() + c.slice(1) +" "), '').trim();
-        
+        cityName = cityName.split(',')       
         let aqiData = await getAqiApiData(cityName[0].trim(), cityName[1].trim(), cityName[2].trim())  
         const dbCity = await db.city.findOne({
             where:{city: cityName[0].trim()}
@@ -269,38 +243,39 @@ app.post('/search', async(req,res)=>{
                 aqi_o3: aqiData.O3.aqi,
                 aqi_no2: aqiData.NO2.aqi,
                 comments: ''
-          }
+            }
         })
         const allFav = await db.favorite.findAll({
             where: {userId: res.locals.user.id},
             include: [db.user,db.city],
-            order: [
-            ['id', 'DESC']
-            ]
+            order: [['id', 'DESC']]
         })
         
         for(const fav of allFav){
-            fav.overall_aqi_color = getAqiColor(fav.aqi)
+            fav.overall_aqi_color = await getAqiColor(fav.aqi)
+            aqiInfo = await getAqiInfo(getAqiColor(fav.aqi))
+            fav.level = aqiInfo.level
+            fav.healthImplications = aqiInfo.health_implications
         }
 
         await res.render('favorite',{allFav})
        
     } catch(err){
-      console.log("error",err)
+        console.log("error",err)
     }
 })
 
+//lists favorites, with additional AQI info, for a particular user
+//data is storted by date
+//route used in anchor tag, as the mechanism to choose the sort
 app.get('/favorite', async (req,res)=>{
     try{
         const allFav = await db.favorite.findAll({
             where: {userId: res.locals.user.id},
             include: [db.user,db.city],
-            order: [
-            ['date', 'DESC']
-            ]
+            order: [['createdAt', 'DESC']]
         })
-        
-        
+
         let aqiInfo = null
 
         for(const fav of allFav){
@@ -313,20 +288,21 @@ app.get('/favorite', async (req,res)=>{
         res.render('favorite',{allFav})
     
     } catch(err){
-      console.log("error",err)
+        console.log("error",err)
     }
-  })
+})
 
+//lists favorites, with additional AQI info, for a particular user
+//data is storted by city
+//route used in anchor tag, as the mechanism to choose the sort
 app.get('/favorite/city', async (req,res)=>{
     try{
         const allFav = await db.favorite.findAll({
-            // 'select * from favorites f left join users u on u.id = f."userId" left join cities c on c.id = f."cityId" order by c.city desc '
             where: {userId: res.locals.user.id},
             include: [db.user,db.city],
             order: [[db.city, 'city', 'DESC']]
         })
     
-
         let aqiInfo = null
 
         for(const fav of allFav){
@@ -343,14 +319,15 @@ app.get('/favorite/city', async (req,res)=>{
     }
 })
 
+//lists favorites, with additional AQI info, for a particular user
+//data is storted by AQI number
+//route used in anchor tag, as the mechanism to choose the sort
 app.get('/favorite/aqi', async (req,res)=>{
     try{
         const allFav = await db.favorite.findAll({
             where: {userId: res.locals.user.id},
             include: [db.user,db.city],
-            order: [
-            ['aqi', 'DESC']
-            ]
+            order: [['aqi', 'DESC']]
         })
 
         let aqiInfo = null
@@ -369,7 +346,7 @@ app.get('/favorite/aqi', async (req,res)=>{
     }
 })
 
-
+//saves comments to users saved favorite
 app.post('/favorite',async(req,res)=>{
     try{
         await db.favorite.update({comments: req.body.comment}, {
@@ -384,17 +361,18 @@ app.post('/favorite',async(req,res)=>{
         console.log("error",err)
     }
 })
-  
+
+//deletes favorite from users list of favorites (and database)
 app.delete('/favorite', async (req,res)=>{
     await db.favorite.destroy({
         where: {
             id: req.body.deleteId
         }
     })
-    
     res.redirect('/favorite')
 })
 
+//route for home page which displays map
 app.get('/', async (req, res) => {
     try{
         await res.render('map', {
@@ -408,7 +386,8 @@ app.get('/', async (req, res) => {
 //define users controllers
 app.use('/users', require('./controllers/users'))
 
-
+//resets AQI data every 12 hrs
+setInterval(()=>{cachedAqiCityData = null},12*60*60*1000)
 
 //listen on a port
 app.listen(PORT, () => {
