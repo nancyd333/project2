@@ -77,6 +77,19 @@ async function getCities(){
     }
 }
 
+async function getAllCities(){
+    try{
+    allCities = await db.city.findAll({
+        raw: true,
+        // limit: 2 //adding limit for testing since API has a limit on the number of calls
+        })
+        //console.log(allCities)
+        return allCities;
+    } catch (err){
+        console.log('error message ', err)
+    }
+}
+
 // app.use(async (req, res, next) => {
 //     try{
 //     //our code goes here
@@ -155,15 +168,12 @@ async function getAqiInfo(color){
 
 
 
-//let cachedAqiCityData = null
+let cachedAqiCityData = null
 
 async function getMapData(){
  try{
-    //if(cachedAqiCityData === null){
-    // const allCities = await db.city.findAll({
-    //     raw: true,
-    //     limit: 2 //adding limit for testing since API has a limit on the number of calls
-    // })
+    if(cachedAqiCityData === null){
+
     allCities = await getCities()
     //console.log(typeof allFav[0].changed) // this shows the type of object being returned
     for(const city of allCities){
@@ -173,28 +183,46 @@ async function getMapData(){
     }
     // console.log(allCities[0])
     //returns data in json format to the browser for the map.js to consume and make AQI cicles
-    //cachedAqiCityData = allCities
+    cachedAqiCityData = allCities
     // console.log(cachedAqiCityData)
     
-    //}
-    return allCities;
+    }
+    // return allCities;
+    return cachedAqiCityData;
  } catch(err){
-    console.log("ERROR MESSAGE INFO: ", err)
+    console.log("ERROR MESSAGE getMapData: ", err)
  }
  }
 
 //routes and controllers
 
-app.get('/api/cities', async (req, res)=>{
+app.get('/api/cities', async (req, res)=>{ 
     try{
-        allCities = await getMapData()
+        allCities = await getMapData() 
         res.json({allCities})
     //console.log(res.json({allCities}))
-    } catch(err){
-        console.log("error",err)
+    } catch (e){
+        if (e.response.status == 502 ){
+            console.log("502 error")
+        } else {
+            console.log("other error")
+        }
+
     }
 })
 
+app.use(async(req, res, next)=>{
+    try{
+        cityList = await getAllCities()
+        res.locals.list = cityList
+        next()
+    } catch(e){
+        console.log("cityList error : ", e)
+        next()
+    }
+})
+
+//reset aqi data every 12 hrs
 setInterval(()=>{cachedAqiCityData = null},12*60*60*1000)
 
 app.get('/search', async (req,res)=>{
@@ -317,7 +345,7 @@ app.get('/favorite/aqi', async (req,res)=>{
             ['aqi', 'DESC']
             ]
         })
-        
+
         let aqiInfo = null
 
         for(const fav of allFav){
