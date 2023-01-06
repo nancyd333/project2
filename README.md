@@ -1,7 +1,7 @@
 ## Description
 The **Air Quality Search and Save** application allows you to find the Air Quality Index (AQI) for a city in the United States. It will also display the levels of each of pollutant that goes into the AQI: ozone, particle pollution (also called particulate matter), carbon monoxide, nitrogen dioxide and sulfur dioxide. The application only displays the current AQI, but you can save your result to your favorites for your own tracking and add personalized notes.
 
-<!-- Visit [Air Quality Index by City](https://kittens.com/) to try it out.  -->
+Visit [Air Quality Index Tracker App](https://aqitracker.herokuapp.com/) to try it out.
 
 
 
