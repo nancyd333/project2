@@ -114,7 +114,7 @@ async function getAqiInfo(aqiIndexNum){
 //caching is done for performance and due to the API's frequent unavailability
 async function getMapData(){
     try {
-        if(cachedAqiCityData === null){
+        // if(cachedAqiCityData === null){
             allCities = await getCities()
             //console.log(typeof allFav[0].changed) // this shows the type of object being returned
     
@@ -127,10 +127,11 @@ async function getMapData(){
             // console.log(allCities[0])
     
             //returns data in json format to the browser for the map.js to consume and make AQI cicles
-            cachedAqiCityData = allCities
+           
             // console.log(cachedAqiCityData)    
-        }
-        return cachedAqiCityData;
+        // }
+        // return cachedAqiCityData;
+            return allCities;
     } catch(err){
         console.log("ERROR MESSAGE getMapData: ", err)
     }
@@ -379,7 +380,7 @@ app.get('/', async (req, res) => {
 app.use('/users', require('./controllers/users'))
 
 //resets AQI data every 12 hrs
-setInterval(()=>{cachedAqiCityData = null},12*60*60*1000)
+// setInterval(()=>{cachedAqiCityData = null},12*60*60*1000)
 
 //listen on a port
 app.listen(PORT, () => {
