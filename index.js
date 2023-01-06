@@ -34,7 +34,7 @@ async function getCities(){
     try{  
         allCities = await db.city.findAll({
             raw: true,
-            limit: 2 
+            limit: 20 
         })
         
         return allCities;
@@ -73,43 +73,8 @@ async function getAqiApiData(city, state, country){
     return aqiData;
 }
 
-//returns the color associated with the AQI, the colors are defined by creators of AQI
-//used to set the css class in the view (when that option is available)
-// function getAqiColor(aqiIndexNum){
-//     if (aqiIndexNum <= 50){
-//         return 'green';
-//         // return 'rgb(123,201,80)'; //green
-//     } else if(aqiIndexNum <= 100){
-//         return 'yellow';
-//     //   return 'rgb(254, 225, 52)'; //yellow
-//     }  else if(aqiIndexNum <= 150){
-//         return 'orange';
-//     //   return 'rgb(255, 170, 51)';//orange
-//     }  else if(aqiIndexNum <= 200){
-//         return 'red';
-//     //   return 'rgb(184,6,0)';//red
-//     }  else if(aqiIndexNum <= 300){
-//         return 'purple';
-//     //   return 'rgb(93,46,143)';//purple
-//     } else if(aqiIndexNum >= 301){
-//         return 'maroon';
-//     //   return 'rgb(126,46,16)';//maroon
-//     } else {
-//       return 'grey'; // this is a catch all for when there is an error
-//     }
-// } 
-
 //returns supplemental information associated with AQI
-// async function getAqiInfo(color){
-//     const aqiInfo = await db.air_quality_index_desc.findOne({
-//         where: {color: color}
-//     })
-//     //console.log(aqiInfo.dataValues)
-//     return aqiInfo.dataValues;
-// }
-
-//returns supplemental information associated with AQI
-async function getAqiInfo2(aqiIndexNum){
+async function getAqiInfo(aqiIndexNum){
     try{ 
         if (aqiIndexNum <= 50){
             aqiColor = 'green';
@@ -140,12 +105,9 @@ async function getAqiInfo2(aqiIndexNum){
         //console.log(aqiInfo.dataValues)
         return aqiInfo.dataValues;
     } catch(err){
-        console.log("getAqiInfo2 error : ", err)
+        console.log("getAqiInfo error : ", err)
     }
 }
-
-
-
 
 //returns data about city, including longitude and latitude, and combines it with AQI data
 //checks if the AQI API data has been cached, if not it will preform an API call 
@@ -158,7 +120,7 @@ async function getMapData(){
     
             for(const city of allCities){
                 const aqiData = await getAqiApiData(city.city, city.state_abbrv, city.country)
-                const aqiInfo = await getAqiInfo2(aqiData.overall_aqi)
+                const aqiInfo = await getAqiInfo(aqiData.overall_aqi)
                 city.overall_aqi_num = aqiData.overall_aqi
                 city.overall_aqi_color = aqiInfo.color
             }
@@ -184,7 +146,7 @@ async function getMapData(){
                 order: [[assocDb,sort_col, order]]
             })
             for(const fav of allFav){
-                const aqiInfo = await getAqiInfo2(fav.aqi)
+                const aqiInfo = await getAqiInfo(fav.aqi)
                 fav.overall_aqi_color = aqiInfo.color
                 fav.level = aqiInfo.level
                 fav.healthImplications = aqiInfo.health_implications
@@ -197,7 +159,7 @@ async function getMapData(){
                 order: [[sort_col, order]]
             })
             for(const fav of allFav){
-                const aqiInfo = await getAqiInfo2(fav.aqi)
+                const aqiInfo = await getAqiInfo(fav.aqi)
                 fav.overall_aqi_color = aqiInfo.color
                 fav.level = aqiInfo.level
                 fav.healthImplications = aqiInfo.health_implications
@@ -265,6 +227,7 @@ app.use(async(req, res, next)=>{
     try{
         cityList = await getAllCities()
         res.locals.list = cityList
+        //console.log(res.locals.list)
         next()
     } catch(e){
         console.log("cityList error : ", e)
@@ -279,7 +242,7 @@ app.get('/search', async (req,res)=>{
         let cityName = req.query.city
         cityName = cityName.split(',') 
         let aqiData = await getAqiApiData(cityName[0].trim(), cityName[1].trim(), cityName[2].trim()) 
-        let aqiInfo =  await getAqiInfo2(aqiData.overall_aqi)
+        let aqiInfo =  await getAqiInfo(aqiData.overall_aqi)
         
         res.render('search',{ 
             aqiData: aqiData,
@@ -328,7 +291,7 @@ app.post('/search', async(req,res)=>{
         })
         
         for(const fav of allFav){
-            aqiInfo = await getAqiInfo2(fav.aqi)
+            aqiInfo = await getAqiInfo(fav.aqi)
             fav.overall_aqi_color = aqiInfo.color
             fav.level = aqiInfo.level
             fav.healthImplications = aqiInfo.health_implications

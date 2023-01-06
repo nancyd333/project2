@@ -8,6 +8,10 @@ body{
     width: 1500px;
 }
 
+/* input:invalid {
+  border: 2px solid red;
+} */
+
 
 /* class for colors associated with AQI is used in favorites and search */
 .green{

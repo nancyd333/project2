@@ -54,11 +54,13 @@
     </ul>
     <!-- search bar with autocomplete (datalist) -->
     <form class="form-inline" action="/search" method="get" id="homeSearch">
+      <% let patternlist  = list%>
+      <% let newpatternlist  = null%>
       <input class="form-control m-3 d-inline w-90" list="datalistOptions" type="search" placeholder="Type or menu select" aria-label="Search"  id="homeSearch"  name="city" required >
       <datalist id="datalistOptions">
         <% let newlist  = list%>
         <% for(const a of newlist){ %>
-          <option value= "<%=a.city%>, <%=a.state_abbrv%>, <%=a.country%>" > <%=a.city%>, <%=a.state_abbrv%>, <%=a.country%></option>
+          <option value= "<%=a.city%>, <%=a.state_abbrv%>, <%=a.country%>"><%=a.city%>, <%=a.state_abbrv%>, <%=a.country%><br></option>
         <% }%>
       </datalist>
         <button class="btn btn-outline-info my-2 my-sm-0" type="submit" value="city">Search</button>
