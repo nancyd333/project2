@@ -7,8 +7,8 @@ The **Air Quality Search and Save** application allows you to find the Air Quali
 
 <details>
 <summary>Why is AQI important?</summary>
-Local air quality affects how you live and breathe. Like the weather, it can change from day to day or even hour to hour. The U.S.Environmental Protection Agency (EPA) and your local air quality agency have been working to make information about outdoor air quality as easy to find and understand as weather forecasts. A key tool in this effort is the Air Quality Index, or AQI. EPA and local officials use the AQI to provide simple information about your local air quality, how unhealthy air may affect you, and how
-you can protect your health. 
+"Local air quality affects how you live and breathe. Like the weather, it can change from day to day or even hour to hour. The U.S.Environmental Protection Agency (EPA) and your local air quality agency have been working to make information about outdoor air quality as easy to find and understand as weather forecasts. A key tool in this effort is the Air Quality Index, or AQI. EPA and local officials use the AQI to provide simple information about your local air quality, how unhealthy air may affect you, and how
+you can protect your health." 
 
 source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/sites/default/files/2018-04/aqi_brochure_02_14_0.pdf)
 
@@ -23,6 +23,24 @@ source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/si
 
 ## Installation Instructions
 //TODO
+
+Install npm modules
+```
+npm install
+```
+
+Create an .env file and gitignore the file
+
+Get api key from api ninja
+
+Add api key to .env file
+
+Get database table data
+
+Create database and tables
+
+Set table associations
+
 
 ## Technologies
 - JavaScript
