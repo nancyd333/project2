@@ -1,7 +1,6 @@
 <%- include("./partials/header.ejs") %>
 
 <% allFav.forEach((fav)=> { %>
-
     <div class="card <%=fav.overall_aqi_color%>">
         <h4 class="card-header"><%=fav.city.city%>, <%=fav.city.state_abbrv%></h4>
         <div class="card-body">
@@ -17,27 +16,24 @@
             [NO2 aqi <strong><%= fav.aqi_no2 %>  </strong>] 
           </p>
       
-          <p>dated <%= fav.date %> </p>
+          <p>date <%= fav.date %> </p>
           <div>
             <form action="/favorite" method="post">
               <textarea class="bg-light"id="textarea" name="comment" maxlength="250" rows="2" cols="50" placeholder="Enter notes here and save. Type up to 250 characters"><%=fav.comments%></textarea>
               <input type="hidden" name="id" value="<%=fav.id%>">
               <button type="submit" class="btn btn-primary mb-5">save note</input>
-              </form>
+            </form>
           </div>
 
-        <form action="/favorite?_method=DELETE" method="post">
+          <form action="/favorite?_method=DELETE" method="post">
             <input type="hidden" name="deleteId" value="<%=fav.id%>">
             <input type="hidden" name="delete" value="delete">
             <button type="submit" class="btn btn-outline-dark btn-block">permanently delete this favorite</input>
-        </form>
-        
+          </form>
         </div>
-      </div>
+    </div>
    
-    <% }); %>
-
-    
+<% }); %>
 
 
 <%- include("./partials/footer.ejs") %>

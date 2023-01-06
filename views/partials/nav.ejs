@@ -1,3 +1,5 @@
+<!-- navigation bar -->
+
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
   <a class="navbar-brand" href="/">Air Quality Index (AQI) tracker for select U.S. cities   |</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -9,26 +11,30 @@
       <li class="nav-item active">
         <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
       </li>
+      
       <% if(user){ %>
-      <!-- show these if the user is logged in  -->
-      <li class="nav-item"><a class="nav-link" href="/users/profile">Profile</a></li>
-      <li class="nav-item"><a class="nav-link" href="/users/logout">Logout</a></li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        My Favorites
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/favorite"><strong>Sort by date</strong> (desc)</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/favorite/city"><strong>Sort by city</strong> (desc)</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/favorite/aqi"><strong>Sort by AQI</strong> (desc)</a>
-        </div>
-      </li>
+        <!-- show these if the user is logged in  -->
+        <li class="nav-item"><a class="nav-link" href="/users/profile">Profile</a></li>
+        <li class="nav-item"><a class="nav-link" href="/users/logout">Logout</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            My Favorites
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="/favorite"><strong>Sort by date</strong> (desc)</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/favorite/city"><strong>Sort by city</strong> (desc)</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/favorite/aqi"><strong>Sort by AQI</strong> (desc)</a>
+          </div>
+        </li>
       <% } else { %>
-      <li class="nav-item"><a class="nav-link" href="/users/new">Sign Up</a></li>
-      <li class="nav-item"><a class="nav-link" href="/users/login">Login</a></li>
+        <!-- show these if the user is NOT logged in  -->
+        <li class="nav-item"><a class="nav-link" href="/users/new">Sign Up</a></li>
+        <li class="nav-item"><a class="nav-link" href="/users/login">Login</a></li>
       <% } %>
+      
+      <!-- everyone sees these links -->
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Links
@@ -36,7 +42,6 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" ><strong>AQI Info</strong></a>
           <a class="dropdown-item" target= "_blank" href="https://www.epa.gov/outdoor-air-quality-data">US Environmental Protection Agency Air Data</a>
-          <!-- <div class="dropdown-divider"></div> -->
           <a class="dropdown-item" target= "_blank" href="https://www.airnow.gov/aqi/aqi-basics/">AQI Basics</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" ><strong>Development Resources</strong></a>
@@ -46,21 +51,17 @@
           <a class="dropdown-item" target= "_blank" href="https://codepen.io/haakseth/pen/KQbjdO">Map legend (from codepen)</a>
         </div>
       </li>
-
     </ul>
+    <!-- search bar with autocomplete (datalist) -->
     <form class="form-inline" action="/search" method="get" id="homeSearch">
       <input class="form-control m-3" list="datalistOptions" type="search" placeholder="Select from menu" aria-label="Search"  id="homeSearch"  name="city" required >
       <datalist id="datalistOptions">
-        <!-- <select class="form-select" aria-label="Default select example">   -->
-          <!-- <option selected>Open this select menu</option> -->
-                      <% let newlist  = list%>
-                      <% for(const a of newlist){ %>
-                        <option value= "<%=a.city%>, <%=a.state_abbrv%>, <%=a.country%>" > <%=a.city%>, <%=a.state_abbrv%>, <%=a.country%></option>
-                          <% }%>
-        <!-- </select> -->
+        <% let newlist  = list%>
+        <% for(const a of newlist){ %>
+          <option value= "<%=a.city%>, <%=a.state_abbrv%>, <%=a.country%>" > <%=a.city%>, <%=a.state_abbrv%>, <%=a.country%></option>
+        <% }%>
       </datalist>
         <button class="btn btn-outline-info my-2 my-sm-0" type="submit" value="city">Search U.S. City</button>
-      </form>
-
+    </form>
   </div>
 </nav>

@@ -1,10 +1,8 @@
 body{
     background-color: rgb(52,58,63);
-     /* rgba(83,158,249,1); */
-   
 }
 
-
+/* leaflet map, sets size */
 #map { 
     height: 750px; 
     width: 1500px;
@@ -12,7 +10,7 @@ body{
 
 
 
-
+/* note: this AQI to color mapping is defined on index.js, style.css and map.js */
 .green{
     background-color:rgb(123,201,80);
 }
@@ -32,6 +30,8 @@ body{
 .maroon{
     background-color: rgb(126,46,16);
 }
+
+/* css for lengend is from https://codepen.io/haakseth/pen/KQbjdO */
 
 .legend {
     padding: 6px 8px;

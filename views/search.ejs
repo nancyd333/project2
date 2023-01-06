@@ -1,38 +1,34 @@
 <%- include("./partials/header.ejs") %>
-
   
-    <div class="card border-dark text-center" >
-        <div class="card-header">Search results</div>
-
-            <h2 class="card-title m-3"><%=city%>, <%=state%></h2>
-        
-        <div class="card-body pt-0">
-        <ul class="list-group list-group-flush">
-            <div >
-                <li class = "list-group-item <%=aqiColor%>"><h3>Overall AQI: <strong><%=aqiData.overall_aqi%></strong></h3><h5><%=aqiLevel%></h5></li>
+<div class="card border-dark text-center" >
+    <div class="card-header">Search results</div>
+        <h2 class="card-title m-3"><%=city%>, <%=state%></h2>
+            <div class="card-body pt-0">
+                <ul class="list-group list-group-flush">
+                    <div>
+                        <li class = "list-group-item <%=aqiColor%>">
+                            <h3>Overall AQI: <strong><%=aqiData.overall_aqi%></strong></h3>
+                            <h5><%=aqiLevel%></h5>
+                        </li>
+                    </div>
+            
+                    <li class="list-group-item">CO: <strong><%=aqiData.CO.aqi%></strong></li>
+                    <li class="list-group-item">PM10: <strong><%=aqiData.PM10.aqi%></strong></li>
+                    <li class="list-group-item">PM2.5: <strong><%=aqiData["PM2.5"].aqi%></strong></li>
+                    <li class="list-group-item">SO2: <strong><%=aqiData.SO2.aqi%></strong></li>
+                    <li class="list-group-item">O3: <strong><%=aqiData.O3.aqi%></strong></li>
+                    <li class="list-group-item">NO2: <strong><%=aqiData.NO2.aqi%></strong></li>
+                    <li class="list-group-item"></li>
+                </ul>
             </div>
-          <li class="list-group-item">CO: <strong><%=aqiData.CO.aqi%></strong></li>
-          <li class="list-group-item">PM10: <strong><%=aqiData.PM10.aqi%></strong></li>
-          <li class="list-group-item">PM2.5: <strong><%=aqiData["PM2.5"].aqi%></strong></li>
-          <li class="list-group-item">SO2: <strong><%=aqiData.SO2.aqi%></strong></li>
-          <li class="list-group-item">O3: <strong><%=aqiData.O3.aqi%></strong></li>
-          <li class="list-group-item">NO2: <strong><%=aqiData.NO2.aqi%></strong></li>
-          <li class="list-group-item"></li>
-        </ul>
-
-        </div>
 
         <%if(user){%>
             <form action="/search" method="post">
                 <input hidden type="text"  name="city" value="<%=city%>, <%=state%>, <%=country%>" required/>
                 <button type="submit" class="btn btn-primary btn-lrg mb-5 mx-center" > Add result to favorites</button>
             </form>
-            <%}%>
+        <%}%>
     </div>
-
-    
 </div>
-
-
 
 <%- include("./partials/footer.ejs") %>

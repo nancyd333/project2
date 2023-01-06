@@ -5,7 +5,7 @@
 </div>
 
 <div class="d-flex justify-content-center">
-<form action="/users" method="POST">
+  <form action="/users" method="POST">
     <div class="form-group row">
       <div class="col-sm-12">
         <input type="email" class="form-control" id="inputEmail3" placeholder="Email" name="email" required>
@@ -18,23 +18,13 @@
     </div>
     
     <div class="d-flex justify-content-center m-4">
-    <div class="form-group row">
-      <div class="col-sm-10">
-        <button type="submit" class="btn btn-primary">Sign Up</button>
+      <div class="form-group row">
+        <div class="col-sm-10">
+          <button type="submit" class="btn btn-primary">Sign Up</button>
+        </div>
       </div>
     </div>
-  </div>
   </form>
 </div>
-
-<!-- <form action="/users" method="POST">
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="email" required/>
-
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password" required />
-
-    <button type="submit">Sign Up</button>
-</form> -->
 
 <%- include('../partials/footer.ejs') %>
