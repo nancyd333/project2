@@ -9,8 +9,7 @@ body{
 }
 
 
-
-/* note: this AQI to color mapping is defined on index.js, style.css and map.js */
+/* class for colors associated with AQI is used in favorites and search */
 .green{
     background-color:rgb(123,201,80);
 }
@@ -31,21 +30,20 @@ body{
     background-color: rgb(126,46,16);
 }
 
-/* css for lengend is from https://codepen.io/haakseth/pen/KQbjdO */
+/* css for legend is from https://codepen.io/haakseth/pen/KQbjdO */
 
 .legend {
     padding: 6px 8px;
     font: 14px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255, 255, 255, 0.8);
+    background: 	rgba(192,192,192,0.5);
     line-height: 24px;
-    color: #555;
+    color: #444;
   }
   .legend h4 {
     text-align: center;
     font-size: 16px;
     margin: 2px 12px 8px;
-    color: #777;
+    color: #555;
   }
   
   .legend span {

@@ -17,49 +17,22 @@ function createMap(){
 
 }
 
-
-//provide the aqi number get the rgb number that corresponds, used to populate circles (unable to use class for the color in this case)
-//note: this mapping is defined on index.js, style.css and map.js
-function getAqiColor(aqiIndexNum){
-    if (aqiIndexNum <= 50){
-        // return 'green';
-        return 'rgb(123,201,80)';
-    } else if(aqiIndexNum <= 100){
-        // return 'yellow';
-      return 'rgb(254, 225, 52)'; 
-    }  else if(aqiIndexNum <= 150){
-        // return 'orange';
-      return 'rgb(255, 170, 51)';
-    }  else if(aqiIndexNum <= 200){
-        // return 'red';
-      return 'rgb(184,6,0)';
-    }  else if(aqiIndexNum <= 300){
-        // return 'purple';
-      return 'rgb(93,46,143)';
-    } else if(aqiIndexNum >= 301){
-        // return 'maroon';
-      return 'rgb(126,46,16)';
-    } else {
-      return 'grey';
-    }
-  } 
-
 //legend was copied from https://codepen.io/haakseth/pen/KQbjdO  
 //variable for the legend
 var legend = L.control({ position: "bottomleft" });
 
 //function to create the legend
-//added css class here to get the colors associated with the levels
+//background colors are associated with the AQI levels
 function createLegend(){
   legend.onAdd = function(map) {
     var div = L.DomUtil.create("div", "legend");
     div.innerHTML += "<h4>AQI Legend</h4>";
-    div.innerHTML += '<i class="green"></i><span>0-50 Good</span><br>';
-    div.innerHTML += '<i class="yellow"></i><span>51-100 Moderate</span><br>';
-    div.innerHTML += '<i class="orange"></i><span>101-150 Unhealthy for Sensitive Groups</span><br>';
-    div.innerHTML += '<i class="red"></i><span>151-200 Unhealthy</span><br>';
-    div.innerHTML += '<i class="purple"></i><span>201-300 Very Unhealthy</span><br>';
-    div.innerHTML += '<i class="maroon"></i><span>301+ Hazardous</span><br>';
+    div.innerHTML += '<i style="background: green"></i><span>0-50 Good</span><br>';
+    div.innerHTML += '<i style="background: yellow"></i><span>51-100 Moderate</span><br>';
+    div.innerHTML += '<i style="background: orange"></i><span>101-150 Unhealthy for Sensitive Groups</span><br>';
+    div.innerHTML += '<i style="background: red"></i><span>151-200 Unhealthy</span><br>';
+    div.innerHTML += '<i style="background: purple"></i><span>201-300 Very Unhealthy</span><br>';
+    div.innerHTML += '<i style="background: maroon"></i><span>301+ Hazardous</span><br>';
   
     return div;
   };
@@ -75,7 +48,7 @@ let circle1 = null
 function addLayer(lat, long, color, aqi, city){
   circle1 = L.circle([lat,long], {
     color: color,
-    class: "leaflet-interactive yellow",
+    class: "leaflet-interactive",
     fillColor: color,
     fillOpacity: 0.5,
     radius: aqi * 1000, //the aqi index number creates a radius that is too small to see on the map, therefore it's multiplied by 1000
@@ -100,7 +73,7 @@ function renderMap(){
         })
         .then((cities)=>{
             for(const aqi of cities.allCities){
-                addLayer(aqi.lat, aqi.lng,getAqiColor(aqi.overall_aqi_num),aqi.overall_aqi_num,aqi.city)
+                addLayer(aqi.lat, aqi.lng,aqi.overall_aqi_color,aqi.overall_aqi_num,aqi.city)
                 circle1.bindPopup(`AQI: ${aqi.overall_aqi_num} (city: ${aqi.city}, ${aqi.state_abbrv})`
             )}
         })
