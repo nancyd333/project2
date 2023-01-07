@@ -5,8 +5,6 @@ The autocomplete search can be used, to find a paricular city. The results displ
 
 Visit [Air Quality Index Tracker App](https://aqitracker.herokuapp.com/) to try it out.
 
-
-
 <details>
 <summary>Why is AQI important?</summary>
 "Local air quality affects how you live and breathe. Like the weather, it can change from day to day or even hour to hour. The U.S.Environmental Protection Agency (EPA) and your local air quality agency have been working to make information about outdoor air quality as easy to find and understand as weather forecasts. A key tool in this effort is the Air Quality Index, or AQI. EPA and local officials use the AQI to provide simple information about your local air quality, how unhealthy air may affect you, and how
@@ -94,10 +92,12 @@ source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/si
 - JavaScript
 - HTML 
 - CSS
+- Node
 - Express
 - Sequelize
 - EJS
 - Crypto-js
+- Method-Override
 - Dotenv
 - Bcrypt
 - Axios
