@@ -48,4 +48,4 @@
 const cryptoNode = require('crypto')
 //it's predictable what the hash will be
 const hash = cryptoNode.createHash('sha256').update('a','utf8').digest()
-console.log(hash.toString('hex'))
+//console.log(hash.toString('hex'))

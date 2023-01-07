@@ -21,9 +21,6 @@ app.use(express.urlencoded({extended: false})) //middleware to parse request bod
 app.use(cookieParser()) //tell express to parse incoming cookies
 app.use(express.static('public')) //tells express there are static files stored in folder named public
 
-//--VARIABLES--//
-let cachedAqiCityData = null
-
 
 //--FUNCTIONS--//
 
@@ -97,7 +94,6 @@ async function getAqiInfo(aqiIndexNum){
         } else {
             aqiColor = 'grey'; // this is a catch all for when it can't find an associated color
         }
-
         const aqiInfo = await db.air_quality_index_desc.findOne({
             where: {color: aqiColor}
         })
@@ -110,28 +106,22 @@ async function getAqiInfo(aqiIndexNum){
 }
 
 //returns data about city, including longitude and latitude, and combines it with AQI data
-//checks if the AQI API data has been cached, if not it will preform an API call 
-//caching is done for performance and due to the API's frequent unavailability
 async function getMapData(){
     try {
-        // if(cachedAqiCityData === null){
-            allCities = await getCities()
-            //console.log(typeof allFav[0].changed) // this shows the type of object being returned
+        allCities = await getCities()
+        //console.log(typeof allFav[0].changed) // this shows the type of object being returned
     
-            for(const city of allCities){
-                const aqiData = await getAqiApiData(city.city, city.state_abbrv, city.country)
-                const aqiInfo = await getAqiInfo(aqiData.overall_aqi)
-                city.overall_aqi_num = aqiData.overall_aqi
-                city.overall_aqi_color = aqiInfo.color
-            }
-            // console.log(allCities[0])
-    
-            //returns data in json format to the browser for the map.js to consume and make AQI cicles
-           
-            // console.log(cachedAqiCityData)    
-        // }
-        // return cachedAqiCityData;
-            return allCities;
+        for(const city of allCities){
+            const aqiData = await getAqiApiData(city.city, city.state_abbrv, city.country)
+            const aqiInfo = await getAqiInfo(aqiData.overall_aqi)
+            city.overall_aqi_num = aqiData.overall_aqi
+            city.overall_aqi_color = aqiInfo.color
+        }
+        //console.log(allCities[0])
+        //console.log(allCities)
+
+        //returns data in json format to the browser for the map.js to consume and make AQI cicles
+        return allCities;
     } catch(err){
         console.log("ERROR MESSAGE getMapData: ", err)
     }
@@ -378,9 +368,6 @@ app.get('/', async (req, res) => {
 
 //define users controllers
 app.use('/users', require('./controllers/users'))
-
-//resets AQI data every 12 hrs
-// setInterval(()=>{cachedAqiCityData = null},12*60*60*1000)
 
 //listen on a port
 app.listen(PORT, () => {
