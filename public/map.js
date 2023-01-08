@@ -3,7 +3,7 @@
 
 //creates base map object used by all other functions in this script
 var map = L.map('map',{
-  center: [39.1238,-94.5541], 
+  center: [ 37.1238, -95.8758 ],
   zoom: 5,
   scrollWheelZoom: false
 })

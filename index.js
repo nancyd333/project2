@@ -329,7 +329,7 @@ app.get('/favorite/aqi', async (req,res)=>{
     }
 })
 
-//saves comments to users saved favorite
+//saves user entered notes to users saved favorite
 app.post('/favorite',async(req,res)=>{
     try{
         await db.favorite.update({comments: req.body.comment}, {

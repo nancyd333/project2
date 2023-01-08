@@ -29,22 +29,22 @@ source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/si
     - The site requires you to sign up for a key. There is also a limit on the number of requests you can make to the site. Under your account, the site shows you how many requests you've made, allowing you to monitor your usage. The api key is stored on your account so you can always retreive the key (or generate a new key). 
 2. Get city data from [SimpleMaps](https://simplemaps.com/data/us-cities) for ```cities``` table
     -  This data will be imported in **step 6 of Installation Instructions**
-    > **Please note:** SimpleMaps does not allow sharing of the data from their site (including sharing of their data stored in a database), therefore you will need to prep the data for import into the AQI Tracker database app. This can be done in either sequelize or psql.
+    > **Please note:** SimpleMaps does not allow sharing of the data from their site (including sharing of their data stored in a database), therefore you will need to prep the data for import into the AQI Tracker database app. This can be done using either sequelize or psql.
     -  The method I used was to create INSERT statements for upload into psql, which I will outline here:
         -  Downloaded Basic (free) version of US cities data from SimpleMaps
             -  Here you have a choice of which cities to include. I included citites which SimpleMaps ranked as 1, and then I also included capital cities for each state. When making your selection, remember the API has a limited number of calls, and the map can be difficult to read if all cities are included. The cities you choose will be your dataset of citites for the application.
-            -  The data is in csv format, which I opened as a google spreadsheet. I kept the columns named: city, state_id, country_name, lat, lng, ranking, and id. I used the ranking column initially as a filter, but once that was complete, I repurposed the column and used as a state_captials_flag. This column is not used in the application, but since it's a column in the psql database and sequelize models you will need to included it, although it can be an empty string ```''```.
+            -  The data is in csv format, which I opened as a google spreadsheet. I kept the columns named: city, state_id, state_name, country_name, lat, lng, ranking, and id. I used the ranking column initially as a filter, but once that was complete, I repurposed the column and used as a state_captials_flag. This column is not used in the application, but since it's a column in the psql database and sequelize models you will need to included it, although it can be an empty string ```''```.
             -  Next, I used the concatenate function in the google spreadsheet to create the insert statements for each row. Below is an example of what a couple rows would looks like. This shows what the columns must be named and what the data value format needs to be. 
                 -  ```current_date``` value should be added as shown, this populates the createdAt and updatedAt columns
-                -  ```simplemaps_city_id``` column name is the ```id``` on the SimpleMaps csv file, I kept it in case I needed to reference back to the original file. It's not used in the application.
+                -  ```simplemaps_city_id``` column name is the ```id``` on the SimpleMaps csv file, I kept it in case I needed to reference back to the original file.  This column is not used in the application, but since it's a column in the psql database and sequelize models you will need to included it, although it can be an empty string ```''```.
                     ```
-                    INSERT INTO cities (city, state_abbrv, state_name, state_capital_flag,    lat,lng,country,simplemaps_city_id,"createdAt","updatedAt") VALUES ('Montgomery','AL','Alabama','Y',32.3482,-86.2668,'US',1840008353,current_date,current_date);
+                    INSERT INTO cities (city, state_abbrv, state_name, state_capital_flag, lat,lng,country,simplemaps_city_id,"createdAt","updatedAt") VALUES ('Montgomery','AL','Alabama','Y',32.3482,-86.2668,'US',1840008353,current_date,current_date);
                     INSERT INTO cities (city, state_abbrv, state_name, state_capital_flag, lat,lng,country,simplemaps_city_id,"createdAt","updatedAt") VALUES ('Juneau','AK','Alaska','Y',58.4546,-134.1739,'US',1840023306,current_date,current_date);
                     ```
-            - Once all the insert statements were created for each city, I copied and pasted them as values (in google spreadsheet) to remove the formulas. The last step is to copy all the statements at once and paste them into the psql terminal, they will run through automatically creating each row in the database.
+            - Once all the insert statements were created for each city, I copied and pasted them as values (in google spreadsheet) to remove the formulas. The last step is to copy all the statements at once and paste them into the psql terminal. The statements will execute automatically to create new rows in the database.
 4. Get Air Quality Index descriptive data for ```air_quality_index_descs``` table
     - This data will be imported in **step 6 of Installation Instructions**
-    - In the file called ```AirQualityIndexDescriptions.txt``` are all the INSERT statements, you just need to copy them all and paste it directly into the psql terminal, as detailed in step 6 of the Installation Instructions. They will run through automatically creating each row in the database.
+    - In the file called ```AirQualityIndexDescriptions.txt``` are all the INSERT statements, you just need to copy them all and paste it directly into the psql terminal (this is to be done during step 6 of the Installation Instructions). The statements will execute automatically to create new rows in the database.
 
 
 ### Installation Instructions
@@ -110,14 +110,18 @@ source: [Environment Protection Agency - AQI brochure](https://www.airnow.gov/si
 
 ## Approach
 This project is a proof of concept. The goal was to learn about API's, map imaging, map data, and retrieving and rendering data from multiple sources on a web application. Throughout the project I needed to make decisions about scoping and how far to investigate or develop a particular part of the application. Ultimately I landed on the following:
+- Focus was on implementing AQI data search and display pages
+    - User pages were not fully designed out
 - Limiting results to U.S. cities (major and capital cities only), and incorporating a map
     - The API has a retrieval limit, so I needed to limit the number of API calls. By limiting the number of cities I was able to limit the number of calls when the map is rendered as the home page is loaded.
     - In order to map the data, coordinates for the city are needed. The API used did not provide coordinates in their results, so I needed a table that could convert the city to coordinates. Including non-US cities would be a larger scope. 
     - There are thousands of U.S. cities. Having visuals on a map for that many cities could be overwhelming and would require a lot more time to figure out how to represent them in a simple design. The limited data points supported the goal of a simple, and easily absorbed design.
 - Retrieving the correct information for a city (which includes city, state and country information)
-    - The API only requires city, but there are many U.S. cities with the same name (for example: Portland ME and Portland OR). The API doesn't tell you which city it's returning data for. Therefore searches were coded to send the state and country information. I didn't want the user to be required to enter state and country information so I implemented a autocomplete in the search box. 
+    - The API only requires city, but there are many U.S. cities with the same name (for example: Portland ME and Portland OR). The API doesn't tell you which city it's returning data for. Therefore searches were coded to send the state and country information. I didn't want the user to be required to enter state and country information so I implemented an autocomplete in the search box. 
 - Quick, easy, simple styling
     - Bootstrap was used to style, which allowed for quick development
+    - A very basic implementation for adding notes was used.
+    - A very basic design for deleting a favorite was used.
 - Not incorporating validations or user messages
     - Due to time, the application did not focus on validations or providing user feedback when the application is not responsive.
 
@@ -153,18 +157,20 @@ This project is a proof of concept. The goal was to learn about API's, map imagi
 
 ## Wireframes
 
-<img src="./img/mockup.png" width="400" height="400"/>
+### Initial Design
+<img src="./img/mockup.png" width="300" height="300"/>
+
+### Final Design
+<img src="./img/mockup_notloggedin_pages_update.png" width="300" height="300"/>
+<img src="./img/mockup_loggedin_pages_update.png" width="300" height="300"/>
+<img src="./img/mockup_login_update.png" width="300" height="300"/>
+
 
 ## ERD
 
-<img src="./img/erd_mvp.png" width="400" height="400"/>
+<img src="./img/erd_update_1.png" width="350" height="400"/>
+<img src="./img/erd_update_2.png" width="125" height="200"/>
 
-
-<details>
-<summary>Potential stretch goals ERD</summary>
-
-<img src="./img/erd_stretch.png" width="350" height="400" />
-</details>
 
 ## RESTful routing chart
 
@@ -184,18 +190,22 @@ This project is a proof of concept. The goal was to learn about API's, map imagi
 | /api/cities              | GET    | READ      | displays all cities with AQI API data (for use by map client-side) |
 
 
+## Architectural diagram
+<img src="./img/aqiTrackerAppDiagram.png" width="600" height="400" />
+
 ## Post project
 
 I learned a lot from this proof of concept. To highlight a few items:
 
 - There is a lot more to learn about geographical data, environmental data, API's, and what is available to the public.
-    - The method chosen to get the cities data was chosen due to time. There are API's to get that data, but there could be retreival limits. If downloading data, formatting, and uploading to a database is the better option, then perhaps writing a script to format data for sequelize or psql from csv would be a good use of time (if one doesn't exist).
-    - This project focused on simple longitude and latitude for a city, but I'd like to learn more about geographical and environmental data that is available for public use.
+    - The method chosen to get the cities data was chosen due to time. There are API's to get that data, a better option might be to use a free API to retrieve and store that data to a database. If downloading data in csv format is required, then perhaps writing a script to format data for sequelize or psql from csv would be a good use of time.
+    - This project focused on simple longitude and latitude for a city, but I'd like to learn more about geographical and environmental data that is available for public use, and the accuracy of the data.
 - API data can be unreliable and limited.
-    - Sometimes the API works for batch requests, and sometimes it doesn't. This detail is not always provided on the website for the API, especially when it's free, so one would need to monitor it over a period of time and retieving various volumes of data before knowing if it could be used for their project. 
+    - Sometimes the API worked for batch requests, and sometimes it didn't. The API didn't provide inforamtion on the website about what to expect from batch requests. When chosing an API, it would seem one would need to monitor it over a period of time and retieving various volumes of data before knowing if it should be used for their project. 
     - The API I chose has enough retrievals for a personal project, but a different API would be required for a production application or a larger user base. Depending on how often the data needed to be refreshed, there could be a job that gets the data from the API and stores it daily to a database.
     - Changing an API could require code refactoring since they could require different input to get the same output. Perhaps writing the code in a way that makes swapping out API's easier, would be useful.
 - Server-side vs. client-side data delivery and consumption was something that came up during this project. This is an area I'd like to delve deeper into.
+- Implementing modals for the user entered notes would be another feature I'd like to incorporate in the future.
 - Validations were not implemented, but it's something I'd like to incorporate in this project in the future.
 
 
