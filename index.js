@@ -31,7 +31,7 @@ async function getCities(){
     try{  
         allCities = await db.city.findAll({
             raw: true,
-            limit: 88
+            limit: 20 //there are 88 cities in database
         })
         
         return allCities;
