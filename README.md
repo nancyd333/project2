@@ -191,7 +191,7 @@ This project is a proof of concept. The goal was to learn about API's, map imagi
 
 
 ## Architectural diagram
-<img src="./img/aqiTrackerAppDiagram.png" width="600" height="400" />
+<img src="./img/aqiTrackerAppDiagram_v2.png" width="600" height="400" />
 
 ## Post project
 
