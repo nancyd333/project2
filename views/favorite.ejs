@@ -18,7 +18,7 @@
       
           <p>date <%= fav.date %> </p>
           <div>
-            <form action="/favorite" method="post">
+            <form action="/favorite?_method=PUT" method="post">
               <textarea class="bg-light"id="textarea" name="comment" maxlength="250" rows="2" cols="50" placeholder="Enter notes here and save. Type up to 250 characters"><%=fav.comments%></textarea>
               <input type="hidden" name="id" value="<%=fav.id%>">
               <button type="submit" class="btn btn-primary mb-5">save note</input>

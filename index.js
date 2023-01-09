@@ -31,7 +31,7 @@ async function getCities(){
     try{  
         allCities = await db.city.findAll({
             raw: true,
-            // limit: 20 
+            limit: 88
         })
         
         return allCities;
@@ -330,7 +330,7 @@ app.get('/favorite/aqi', async (req,res)=>{
 })
 
 //saves user entered notes to users saved favorite
-app.post('/favorite',async(req,res)=>{
+app.put('/favorite',async(req,res)=>{
     try{
         await db.favorite.update({comments: req.body.comment}, {
             where: {

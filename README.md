@@ -175,19 +175,19 @@ This project is a proof of concept. The goal was to learn about API's, map imagi
 ## RESTful routing chart
 
 
-| URL                      | CRUD   | HTTP verb | Example                                                            |
-|:------------------------ | ------ |:--------- |:------------------------------------------------------------------ |
-| /                        | READ   | GET       | loads home page with map                                           |
-| /user                    | POST   | CREATE    | create new user                                                    |
-| /user                    | GET    | READ      | get user profile                                                   |
-| /search/citystatecountry | GET    | READ      | display results of AQI from city search                            |
-| /search/citystatecountry | POST   | CREATE    | add search results to favorites when user logged in                |
-| /favorite                | GET    | READ      | display list of favorites, for a user, ordered by create date desc |
-| /favorite/city           | GET    | READ      | display list of favorites, for a user, ordered by city desc        |
-| /favorite/aqi            | GET    | READ      | display list of favorites, for a user, ordered by aqi desc         |
-| /favorite                | PUT    | UPDATE    | update comment on favorite for a user                              |
-| /favorite                | DELETE | DESTROY   | delete favorite from list for a user                               |
-| /api/cities              | GET    | READ      | displays all cities with AQI API data (for use by map client-side) |
+| URL                       | CRUD   | HTTP verb | Example                                                            |
+|:------------------------- | ------ |:--------- |:------------------------------------------------------------------ |
+| /                         | READ   | GET       | loads home page with map                                           |
+| /user                     | POST   | CREATE    | create new user                                                    |
+| /user                     | GET    | READ      | get user profile                                                   |
+| /search/:citystatecountry | GET    | READ      | display results of AQI from city search                            |
+| /search/:citystatecountry | POST   | CREATE    | add search results to favorites when user logged in                |
+| /favorite                 | GET    | READ      | display list of favorites, for a user, ordered by create date desc |
+| /favorite/city            | GET    | READ      | display list of favorites, for a user, ordered by city desc        |
+| /favorite/aqi             | GET    | READ      | display list of favorites, for a user, ordered by aqi desc         |
+| /favorite                 | PUT    | UPDATE    | update comment on favorite for a user                              |
+| /favorite                 | DELETE | DESTROY   | delete favorite from list for a user                               |
+| /api/cities               | GET    | READ      | displays all cities with AQI API data (for use by map client-side) |
 
 
 ## Architectural diagram
