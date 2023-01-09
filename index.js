@@ -26,12 +26,12 @@ app.use(express.static('public')) //tells express there are static files stored 
 
 //get cities from database
 //gets result set to populate map
-//limit is used for testing, since the API data has a limit (and the results depend on the cities returned)
+//limit is used for testing and is set during development, since the API data has a limit (and the results depend on the cities returned)
 async function getCities(){
     try{  
         allCities = await db.city.findAll({
             raw: true,
-            limit: 20 
+            // limit: 20 
         })
         
         return allCities;
